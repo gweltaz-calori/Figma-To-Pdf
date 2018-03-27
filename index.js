@@ -3,13 +3,14 @@ const app = express()
 
 const {getFilePages,exportPages,getImagesContent,createPdf} = require('./utils')
 
-app.get('/export/:url', async(req, res) => {
-    let splittedUrl = req.params.url.split('/')
-    let key = splittedUrl[splittedUrl.length - 2 ]
+app.use(express.static('public'));
 
+app.get('/',(req,res) => res.sendFile(path.resolve(__dirname,'./public/index.html')))
+
+app.get('/export/:key', async(req, res) => {
     try {
-        let pages = await getFilePages(key)
-        let images = await exportPages(pages,key)
+        let pages = await getFilePages(req.params.key)
+        let images = await exportPages(pages,req.params.key)
         let svgContent = await getImagesContent(pages)
         createPdf(pages,res)
         
@@ -18,7 +19,9 @@ app.get('/export/:url', async(req, res) => {
         
     }
     catch(e) {
-        console.log(e)
+        res.status(400).send({
+            message : "Invalid File"
+        })
     }
     
     

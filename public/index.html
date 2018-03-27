@@ -6,6 +6,41 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>How to use it</h1>
+    <ul>
+        <li>Each artboard is a page</li>
+        <li>Name each artboard with a number (1,2,3, etc) to define the order of the pages in the pdf</li>
+        <li>You can have different size artboards</li>
+        <li>Shadows aren't working</li>
+    </ul>
+
+
+    <input type="text" placeholder="Figma file url">
+    <button>Generate PDF</button>
+
+    <script>
+        let input = document.querySelector('input')
+        let button = document.querySelector('button')
+
+        const generatePdf = async () => {
+            if(input.value.trim().length === 0 )return;
+            let splittedUrl = input.value.split('/')
+            let key = splittedUrl[splittedUrl.length - 2 ]
+
+            let a = document.createElement('a')
+            a.href = `/export/${key}`
+            a.target = "_blank"
+
+            a.click()
+            input.value = ""
+            
+        }
+
+        button.onclick = () => {
+            generatePdf()
+        }
+
+
+    </script>
 </body>
 </html>

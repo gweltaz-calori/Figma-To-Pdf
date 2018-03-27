@@ -14,7 +14,7 @@ let axiosInstance = axios.create({
 module.exports = {
     async getFilePages(key) {
         let response = await axiosInstance.get(`files/${key}`)
-        return response.data.document.children[0].children
+        return response.data.document.children[0].children.sort((a,b) => parseInt(a.name) - parseInt(b.name))
     },
     async exportPages(pages,key) {
         for(let page of pages) {
