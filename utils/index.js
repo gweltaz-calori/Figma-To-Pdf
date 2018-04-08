@@ -4,7 +4,9 @@ const fs = require('fs')
 const blobStream = require('blob-stream');
 const PDFDocument  = require('pdfkit')
 const SVGtoPDF = require('svg-to-pdfkit');
+
 const ACCESS_TOKEN = "<YOUR ACCESS TOKEN>"
+
 
 let axiosInstance = axios.create({
     baseURL : "https://api.figma.com/v1/",
@@ -85,5 +87,8 @@ const pdfCreator = {
         doc.end();
     }
 }
+<<<<<<< HEAD
 
 module.exports = pdfCreator
+=======
+>>>>>>> 5c00259147792eff5514b901f2459019465bec7d
