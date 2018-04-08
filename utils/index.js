@@ -87,8 +87,5 @@ const pdfCreator = {
         doc.end();
     }
 }
-<<<<<<< HEAD
 
 module.exports = pdfCreator
-=======
->>>>>>> 5c00259147792eff5514b901f2459019465bec7d
