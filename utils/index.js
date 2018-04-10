@@ -5,7 +5,7 @@ const blobStream = require('blob-stream');
 const PDFDocument  = require('pdfkit')
 const SVGtoPDF = require('svg-to-pdfkit');
 
-const ACCESS_TOKEN = "<YOUR ACCESS TOKEN>"
+const ACCESS_TOKEN = "<ACCESS-TOKEN>"
 
 
 let axiosInstance = axios.create({
@@ -74,12 +74,13 @@ const pdfCreator = {
         return "content"
     },
     async createPdf(pages,res) {
-        let doc = new PDFDocument({compress: false,size : [pages[0].absoluteBoundingBox.width * 0.75,pages[0].absoluteBoundingBox.height* 0.75]})
+        
+        let doc = new PDFDocument({compress: false,size : [pages[0].absoluteBoundingBox.width,pages[0].absoluteBoundingBox.height]})
         let stream = doc.pipe(res);
         SVGtoPDF(doc, pages[0].svgContent , 0, 0);
         pages.shift()
         for(let page of pages) {
-            doc.addPage({size : [page.absoluteBoundingBox.width* 0.75,page.absoluteBoundingBox.height* 0.75]})
+            doc.addPage({size : [page.absoluteBoundingBox.width,page.absoluteBoundingBox.height]})
             SVGtoPDF(doc, page.svgContent , 0, 0);
         }
 
