@@ -4,9 +4,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        html,body {
+            height:100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container__title {
+            /* Figma Pdf Export */
+            color: #4503FF;
+            
+
+            font-family: SF Pro Display;
+            font-style: normal;
+            font-weight: 900;
+            line-height: normal;
+            font-size: 36px;
+            text-align: center;
+
+
+        }
+
+        .container__helpers {
+            margin-top: 12px;
+            margin-bottom: 46px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: SF Pro Display;
+            font-style: normal;
+            font-weight: bold;
+            line-height: normal;
+            font-size: 12px;
+            text-align: center;
+
+            color: rgba(38, 40, 254, 0.54);
+        }
+
+        input[type="text"] {
+            outline: 0;
+            border:0;
+            background: #FFFFFF;
+            border-radius: 100px;
+            text-transform: uppercase;
+            padding: 17px 32px;
+            color: #4503FF;
+            border: solid rgba(69, 3, 255, 0.5) 1px;
+            text-align: center;
+        }
+
+        button {
+            border:none;
+            outline: 0;
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 16px;
+            background: linear-gradient(123.31deg, #031CFF 0%, #623CFA 58.88%);
+            border-radius: 100px;
+            padding: 17px 32px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+            color: rgba(69, 3, 255, 0.5);
+            opacity: 1; /* Firefox */
+            font-weight: bold;
+        }
+
+        :-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: rgba(69, 3, 255, 0.5);
+            font-weight: bold;
+        }
+
+        ::-ms-input-placeholder { /* Microsoft Edge */
+            color: rgba(69, 3, 255, 0.5);
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>How to use it</h1>
+    <!-- <h1>How to use it</h1>
     <ul>
         <li>Each Frame is a page</li>
         <li>Non frame will not be exported as page</li>
@@ -18,7 +109,20 @@
 
 
     <input type="text" placeholder="Figma file url">
-    <button>Generate PDF</button>
+    <button>Generate PDF</button> -->
+
+    <div class="container">
+        <span class="container__title">Figma Pdf Export</span>
+        <div class="container__helpers">
+            <span>Each Frame is a page</span>
+            <span>Non frame will not be exported as page</span>
+            <span>Text are converted to outlines</span>
+            <span>Order Frame by naming (1,2,3, etc ...)</span>
+            <span>Shadows aren't working</span>
+        </div>
+        <input type="text" placeholder="Figma file url">
+        <button>Generate</button>
+    </div>
 
     <script>
         let input = document.querySelector('input')
