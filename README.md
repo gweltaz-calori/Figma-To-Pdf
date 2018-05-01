@@ -13,6 +13,6 @@ cp .env.dist .env
 ## Some informations
 
 - Each artboard is a page
-- Name each artboard with a number (1,2,3, etc) to define the order of the pages in the pdf
+- Order Frame from left to right (Like in preview mode) to define the order in the pdf
 - You can have different size artboards
 - Shadows aren't working

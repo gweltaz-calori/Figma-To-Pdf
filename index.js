@@ -22,8 +22,8 @@ app.get('/export/:key', async(req, res) => {
         
 
         res.setHeader('Content-Type', 'application/pdf');
-
         
+    
         
     }
     catch(e) {

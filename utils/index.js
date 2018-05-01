@@ -18,12 +18,13 @@ const pdfCreator = {
         let start = performance.now()
         let response = await axiosInstance.get(`files/${key}`)
         let end = performance.now()
+
         
         console.log(`Got file pages in ${end - start} ms`)
 
         return response.data.document.children[0].children
             .filter(layer => layer.type === "FRAME")
-            .sort((a,b) => parseInt(a.name) - parseInt(b.name))
+            .sort((a,b) => parseInt(a.id.split(':')[1]) - parseInt( b.id.split(':')[1]))
     },
     async exportPages(pages,key) {
         let response = await axiosInstance.get(`images/${key}`,{
@@ -33,10 +34,11 @@ const pdfCreator = {
             }
         })
 
-        let imagesUrls = Object.values(response.data.images)
-        for(let page in pages) {
-            pages[page].imageUrl = imagesUrls[page]
+        for(let page of pages) {
+            page.imageUrl = response.data.images[page.id]
         }
+
+        
 
         return "ok"
     },
@@ -61,7 +63,7 @@ const pdfCreator = {
         const options = {
             assumePt : true
         }
-        
+
         let doc = new PDFDocument({compress: false,size : [pages[0].absoluteBoundingBox.width,pages[0].absoluteBoundingBox.height]})
         let stream = doc.pipe(res);
         SVGtoPDF(doc, pages[0].svgContent , 0, 0,options);
