@@ -5,13 +5,11 @@ const blobStream = require('blob-stream');
 const PDFDocument  = require('pdfkit')
 const SVGtoPDF = require('svg-to-pdfkit');
 
-const ACCESS_TOKEN = "TOKEN"
-
 
 let axiosInstance = axios.create({
     baseURL : "https://api.figma.com/v1/",
     headers : {
-        "X-Figma-Token" : ACCESS_TOKEN
+        "X-Figma-Token" : process.env.ACCESS_TOKEN
     }
 })
 
@@ -28,31 +26,19 @@ const pdfCreator = {
             .sort((a,b) => parseInt(a.name) - parseInt(b.name))
     },
     async exportPages(pages,key) {
-        let start = performance.now()
-        let pagesPromises = []
-        
-        for(let page of pages) {
-            let pagePromise = this.exportPage(page,key)
-            pagesPromises.push(pagePromise)
-        }
-        await Promise.all(pagesPromises)
-        let end = performance.now()
-        
-        console.log(`Exported pages in ${end - start} ms `)
-
-        return "ok"
-    },
-    async exportPage(page,key) {
         let response = await axiosInstance.get(`images/${key}`,{
             params : {
-                ids : page.id,
+                ids : pages.map(page => page.id).join(','),
                 format : "svg"
             }
         })
 
-        page.imageUrl = Object.values(response.data.images)[0]
+        let imagesUrls = Object.values(response.data.images)
+        for(let page in pages) {
+            pages[page].imageUrl = imagesUrls[page]
+        }
 
-        return "exported"
+        return "ok"
     },
     async getImagesContent(pages) {
         let start = performance.now()

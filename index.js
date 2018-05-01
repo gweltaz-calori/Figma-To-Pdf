@@ -1,5 +1,11 @@
 const express = require('express')
 const app = express()
+const fs = require('fs')
+const dotenv = require('dotenv')
+const envConfig = dotenv.parse(fs.readFileSync('.env'))
+for (var k in envConfig) {
+  process.env[k] = envConfig[k]
+}
 
 const pdfCreator = require('./utils')
 
@@ -16,6 +22,8 @@ app.get('/export/:key', async(req, res) => {
         
 
         res.setHeader('Content-Type', 'application/pdf');
+
+        
         
     }
     catch(e) {

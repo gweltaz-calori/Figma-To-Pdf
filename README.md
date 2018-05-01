@@ -4,6 +4,11 @@ This is a simple demo of exporting pdf from figma using the API.
 
 [Live Demo](https://figma-pdf.gweltaz-calori.com)
 
+``` bash
+cp .env.dist .env
+
+```
+
 
 ## Some informations
 
