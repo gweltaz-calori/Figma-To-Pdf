@@ -1,18 +1,20 @@
-# Export pdf from figma
+# Figma to Pdf v2
 
-This is a simple demo of exporting pdf from figma using the API.
+# What you can Expect
 
-[Live Demo](https://figma-pdf.gweltaz-calori.com)
+- Low Size pdf
+- 1.5 pdf that will work properly on OSX
+- Customize output (outline text, choose only specific frames, etc ...)
+- Oauth support
+- Better client
 
-``` bash
-cp .env.dist .env
+# What tools
 
+```Inkscape CLI``` to convert svg to pdf instead of pdfkit. Faster and provide 1.5 pdf version
+```PDFTK CLI``` to merge the different pages into one pdf
+
+# Examples
 ```
-
-
-## Some informations
-
-- Each artboard is a page
-- Order Frame from left to right (Like in preview mode) to define the order in the pdf
-- You can have different size artboards
-- Shadows aren't working
+inkscape page.svg --export-pdf-version=1.5 --export-pdf=page.pdf
+pdftk *.pdf cat output complete.pdf
+```
