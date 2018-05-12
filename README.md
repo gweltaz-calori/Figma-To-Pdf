@@ -1,3 +1,5 @@
+Currently working on a newer and better version (see ```v2``` branch)
+
 # Export pdf from figma
 
 This is a simple demo of exporting pdf from figma using the API.
