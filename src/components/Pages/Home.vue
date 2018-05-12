@@ -2,14 +2,37 @@
     <div class="home">
         <figma-title>Figma pdf</figma-title>
         <p class="description">The easiest way to convert figma files into pdf</p>
-        <figma-button-input class="file-input" placeholder="File url"></figma-button-input>
+        <figma-button-input v-model="figmaFileUrl" @onButtonClicked="validateFigmaUrl" class="file-input" placeholder="File url"></figma-button-input>
     </div>
 </template>
 <script>
 import FigmaButtonInput from "@/components/Common/FigmaButtonInput.vue";
 import FigmaTitle from "@/components/Common/FigmaTitle.vue";
+
+import { getFramePages } from "@/api/index";
+
+const FIGMA_URL_REGEX = /https:\/\/([w\.-]+.)?figma.com\/(file|proto)\/([0-9a-zA-Z]{22,128})(?:\/.*)?$/;
+
 export default {
-  components: { FigmaButtonInput, FigmaTitle }
+  components: { FigmaButtonInput, FigmaTitle },
+  data() {
+    return {
+      figmaFileUrl: ""
+    };
+  },
+  methods: {
+    async validateFigmaUrl() {
+      let matches = this.figmaFileUrl.match(FIGMA_URL_REGEX);
+      if (!matches) {
+        //todo show error component
+        return;
+      }
+
+      let fileKey = matches[3];
+
+      console.log(await getFramePages(fileKey));
+    }
+  }
 };
 </script>
 <style scoped>

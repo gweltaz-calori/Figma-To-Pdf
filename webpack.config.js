@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var express = require('express')
-var Dotenv = require('dotenv-webpack');
+
 
 
 var IS_DEV = process.env.NODE_ENV == 'development'
@@ -31,8 +31,7 @@ const plugins = [
     new ExtractTextPlugin({
         filename: "assets/css/style.css",
         disable: IS_DEV
-    }),
-    new Dotenv()
+    })
 ]
 
 if (!IS_DEV) {
@@ -144,6 +143,9 @@ module.exports = {
         noInfo: false,
         overlay: true,
         clientLogLevel: "none",
+        proxy: {
+            "/api": "http://localhost:3002"
+        },
         setup: function (app) {
             app.use('static', express.static(path.resolve(__dirname, 'static')));
         }

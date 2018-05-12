@@ -1,7 +1,7 @@
 <template>
     <div class="input-container" @click="onContainerClicked">
-        <input ref="input" :type="type" :placeholder="placeholder">
-        <figma-round-button @click.native.stop class="button"></figma-round-button>
+        <input :value="value" @input="onValueChanged($event.target.value)" ref="input" :type="type" :placeholder="placeholder">
+        <figma-round-button @click.native.stop="click" class="button"></figma-round-button>
     </div>
 </template>
 
@@ -9,10 +9,16 @@
 import FigmaRoundButton from "@/components/Common/FigmaRoundButton.vue";
 export default {
   components: { FigmaRoundButton },
-  props: ["placeholder", "type"],
+  props: ["placeholder", "type", "value"],
   methods: {
     onContainerClicked() {
       this.$refs.input.focus();
+    },
+    click() {
+      this.$emit("onButtonClicked");
+    },
+    onValueChanged(value) {
+      this.$emit("input", value);
     }
   }
 };
@@ -41,16 +47,16 @@ input {
 }
 
 input::placeholder {
-  color: rgba(91, 80, 255, 0.21);
+  color: rgba(91, 80, 255, 0.41);
   opacity: 1;
 }
 
 input:-ms-input-placeholder {
-  color: rgba(91, 80, 255, 0.21);
+  color: rgba(91, 80, 255, 0.41);
 }
 
 input::-ms-input-placeholder {
-  color: rgba(91, 80, 255, 0.21);
+  color: rgba(91, 80, 255, 0.41);
 }
 
 .button {

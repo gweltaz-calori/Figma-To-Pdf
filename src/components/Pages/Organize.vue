@@ -5,6 +5,9 @@
         <div class="export-header">
           <div class="settings">
             <h2 class="options-title">options</h2>
+            <div class="options">
+              <figma-radio-button label="Text outlines" v-model="file.options.textOutlines"></figma-radio-button>
+            </div> 
           </div>
           <div class="buttons">
             <figma-button class="reset-button">reset</figma-button>
@@ -26,7 +29,6 @@
           <file-page-item class="export-page"></file-page-item>
         </div>
       </div>
-      
   </div>
 </template>
 
@@ -34,11 +36,25 @@
 import FigmaButton from "@/components/Common/FigmaButton.vue";
 import FigmaInput from "@/components/Common/FigmaInput.vue";
 import FilePageItem from "@/components/Specific/FilePageItem.vue";
+import FigmaProgress from "@/components/Common/FigmaProgress.vue";
+import FigmaRadioButton from "@/components/Common/FigmaRadioButton.vue";
 export default {
+  data() {
+    return {
+      file: {
+        options: {
+          textOutlines: false
+        },
+        pages: []
+      }
+    };
+  },
   components: {
     FigmaButton,
     FigmaInput,
-    FilePageItem
+    FilePageItem,
+    FigmaProgress,
+    FigmaRadioButton
   }
 };
 </script>
@@ -97,5 +113,6 @@ export default {
   background: -webkit-linear-gradient(180deg, #8d87e1 0%, #4b3eff 100%), #c4c4c4;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
 }
 </style>
