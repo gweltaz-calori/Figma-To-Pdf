@@ -7,11 +7,12 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "deploy": "npm run build && firebase login --reauth && firebase deploy"
+    "start": "node server/index.js"
   },
   "dependencies": {
     "axios": "^0.17.1",
     "babel-polyfill": "^6.26.0",
+    "dotenv": "^5.0.1",
     "gsap": "^1.20.3",
     "vue": "^2.4.4",
     "vue-router": "^3.0.1",
@@ -27,6 +28,7 @@
     "copy-webpack-plugin": "^4.2.1",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
+    "dotenv-webpack": "^1.5.5",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",
     "firebase-tools": "^3.15.4",

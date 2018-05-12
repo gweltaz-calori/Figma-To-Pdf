@@ -5,6 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var express = require('express')
+var Dotenv = require('dotenv-webpack');
 
 
 var IS_DEV = process.env.NODE_ENV == 'development'
@@ -30,7 +31,8 @@ const plugins = [
     new ExtractTextPlugin({
         filename: "assets/css/style.css",
         disable: IS_DEV
-    })
+    }),
+    new Dotenv()
 ]
 
 if (!IS_DEV) {
@@ -57,6 +59,7 @@ if (!IS_DEV) {
 module.exports = {
     entry: './src/main.js',
     output: {
+        publicPath: '/',
         path: path.resolve(__dirname, './dist'),
         filename: 'assets/js/figma.js'
     },

@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/', name: 'home', component: Home },
-    { path: '/create', name: 'create', component: Creator },
+    { path: '/create/:fileId', name: 'create', component: Creator },
 ]
 
 
