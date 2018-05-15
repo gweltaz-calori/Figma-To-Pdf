@@ -2,6 +2,7 @@
 node_modules/
 dist/
 .env
+server/temp
 npm-debug.log
 yarn-error.log
 

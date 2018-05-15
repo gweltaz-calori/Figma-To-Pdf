@@ -12,7 +12,7 @@
           </div>
           <div class="buttons">
             <figma-button class="reset-button">reset</figma-button>
-            <figma-button @click.native="createPdf" theme="dark">create pdf</figma-button>
+            <figma-button @click.native="generatePdf" theme="dark">create pdf</figma-button>
           </div>
         </div>
         <div class="export-pages">
@@ -31,9 +31,9 @@ import FigmaInput from "@/components/Common/FigmaInput.vue";
 import FilePageItem from "@/components/Specific/FilePageItem.vue";
 import FigmaRadioButton from "@/components/Common/FigmaRadioButton.vue";
 
-import { getFramePages, createPdf } from "@/api/index";
+import { createFramePages } from "@/api/index";
 
-import WS from "@/js/utils/ws";
+import WebSocketManager from "@/js/utils/ws";
 
 export default {
   components: {
@@ -52,7 +52,8 @@ export default {
         options: {
           textOutlines: false
         },
-        frames: []
+        frames: [],
+        id: this.$route.params.fileId
       },
       loadingStep: "Loading",
       progressValue: 0,
@@ -60,27 +61,21 @@ export default {
     };
   },
   methods: {
-    createPdf() {
-      if (this.file.name.length == 0)
-        this.file.name = this.$route.params.fileId;
+    generatePdf() {
+      if (this.file.name.length == 0) this.file.name = this.file.id;
       this.generating = true;
     },
-    onFetchedFrameStep(data) {
+    onFrameStep(data) {
       this.loadingStep = data.step;
-    },
-    onComplete(data) {
-      this.file.frames = data.frames;
     }
   },
-  beforeDestroy() {
-    WS.off();
-  },
+  beforeDestroy() {},
+
   async mounted() {
-    WS.fetchFile({
-      fileId: this.$route.params.fileId
+    createFramePages(this.$route.params.fileId).then(frames => {
+      this.file.frames = frames;
     });
-    WS.onFetchedFrameStep(this.onFetchedFrameStep.bind(this));
-    WS.onComplete(this.onComplete.bind(this));
+    WebSocketManager.onFrameStep(this.onFrameStep.bind(this));
   }
 };
 </script>

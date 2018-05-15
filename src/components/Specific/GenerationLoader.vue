@@ -1,50 +1,57 @@
 <template>
   <div class="loader">
-    <figma-title>GENERATION STARTED</figma-title>
-    <div class="progress-content">
+    <figma-title>{{stepLabel}}</figma-title>
+    <div v-if="!complete" class="progress-content">
         <figma-progress class="progress" :progress="(currentPage/file.frames.length)*100"></figma-progress>
         <span class="progress-label">Processing page {{currentPage}}/{{file.frames.length}}</span>
     </div>
+    <figma-button class="download" v-else @click.native="download" >download again</figma-button>
   </div>
 </template>
 <script>
-import WS from "@/js/utils/ws";
+import WebSocketManager from "@/js/utils/ws";
+import { createPdf } from "@/api/index";
+
+import FigmaButton from "@/components/Common/FigmaButton.vue";
 import FigmaTitle from "@/components/Common/FigmaTitle.vue";
 import FigmaProgress from "@/components/Common/FigmaProgress.vue";
 export default {
   props: ["file"],
   components: {
     FigmaTitle,
-    FigmaProgress
+    FigmaProgress,
+    FigmaButton
   },
   data() {
     return {
-      currentPage: 0
+      currentPage: 0,
+      stepLabel: "GENERATION STARTED",
+      complete: false
     };
   },
   methods: {
-    onPdfStep(data) {
+    onPdfFrameStep() {
       this.currentPage++;
     },
-    onPdfContent(data) {
-      var buffer = new ArrayBuffer(data);
-      var blob = new Blob([buffer], { type: "application/pdf" });
-      var link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `${this.file.name}.pdf`;
-      link.click();
+    onPdfGenerated(data) {
+      this.stepLabel = "PDF GENERATED";
+      this.complete = true;
+
+      let blob = new Blob([data], { type: "application/pdf" });
+      this.link = document.createElement("a");
+      this.link.href = window.URL.createObjectURL(blob);
+      this.link.download = `${this.file.name}.pdf`;
+
+      this.download();
+    },
+    download() {
+      this.link.click();
     }
   },
-  beforeDestroy() {
-    WS.off();
-  },
+  beforeDestroy() {},
   mounted() {
-    WS.createPdf({
-      file: this.file
-    });
-
-    WS.onPdfStep(this.onPdfStep);
-    WS.onPdfContent(this.onPdfContent);
+    createPdf(this.file).then(this.onPdfGenerated.bind(this));
+    WebSocketManager.onPdfFrameStep(this.onPdfFrameStep.bind(this));
   }
 };
 </script>
@@ -71,5 +78,9 @@ export default {
   background: -webkit-linear-gradient(180deg, #8d87e1 0%, #685eff 100%), #c4c4c4;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.download {
+  margin-top: 12px;
 }
 </style>

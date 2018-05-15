@@ -4,9 +4,9 @@ import Vue from 'vue';
 import router from './router/index'
 import store from './store/index'
 
-import WS from '@/js/utils/ws'
+import WebSocketManager from '@/js/utils/ws'
 
-WS.init()
+WebSocketManager.init()
 
 new Vue({
     el: '#app',

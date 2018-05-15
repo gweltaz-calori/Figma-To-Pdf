@@ -12,31 +12,15 @@ const server = http.createServer(app);
 const io = require('socket.io')(server);
 const router = express.Router();
 
-
 const FigmaClient = require('./figmaClient')
-const { convertFrameToPdf} = require('./pdfExport')
+const { convertFrameToPdf } = require('./pdfExport')
 
 app.use(cors())
 app.use(bodyParser.json())
 app.use('/api', router)
 
-router.get('/files/:key', async (req, res) => {
-
-    try {
-        let frames = await FigmaClient.getFrames(req.params.key)
-        res.send(frames)
-    }
-    catch(e) {
-        res.status(400).send('Invalid file key')
-    }
-    
-    
-})
-
-
 router.post('/files/:key/export', async (req, res) => {
 
-    
     try {
         let pdfPaths = [];
         const exportOptions = {
@@ -45,14 +29,11 @@ router.post('/files/:key/export', async (req, res) => {
         }
 
         for (let frame in req.body.file.frames) {
+            notifyUser(req.headers['socket-id'], "ON_PDF_FRAME_STEP")
             let frameItem = req.body.file.frames[frame]
-            let pdfFramePath = await convertFrameToPdf(frameItem, frame, exportOptions)
-
+            let pdfFramePath = await convertFrameToPdf(frameItem.imageUrl, frame, exportOptions)
             pdfPaths.push(pdfFramePath)
-            
-            if (io.sockets.connected[req.headers['socket-id']]) {
-                io.sockets.connected[req.headers['socket-id']].emit("ON_PDF_FRAME_STEP");
-            }
+
         }
 
         let pdfStream = await PDFMerge(pdfPaths, { output: 'Stream' })
@@ -67,17 +48,25 @@ router.post('/files/:key/export', async (req, res) => {
         });
         pdfStream.pipe(res)
     }
-    catch(e) {
+    catch (e) {
         console.log(e)
         res.status(400).send('An error occured during the export')
     }
 
 })
 
-router.post('/images/:key', async (req, res) => {
+router.get('/images/:key', async (req, res) => {
     try {
-        let frames = await FigmaClient.getFramesWithImages(req.body.frames,req.params.key)
-        res.send(frames)
+        notifyUser(req.headers['socket-id'], "ON_FRAME_STEP", {
+            step: "Fetching Frames"
+        })
+        let frames = await FigmaClient.getFrames(req.params.key)
+        notifyUser(req.headers['socket-id'], "ON_FRAME_STEP", {
+            step: "Creating Images"
+        })
+        let framesImages = await FigmaClient.getFramesWithImages(frames, req.params.key)
+
+        res.send(framesImages)
     }
     catch (e) {
         res.status(400).send('Invalid file key')
@@ -88,7 +77,9 @@ server.listen(process.env.SERVER_PORT, () => {
     console.log(`Listening on ${process.env.SERVER_PORT}`)
 });
 
-io.on('connection',socket => {
-    
-})
 
+const notifyUser = (socketId, eventName, payload = {}) => {
+    if (io.sockets.connected[socketId]) {
+        io.sockets.connected[socketId].emit(eventName, payload);
+    }
+}

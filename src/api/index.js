@@ -1,24 +1,33 @@
 import axios from 'axios'
+import WebSocketManager from "@/js/utils/ws";
 
-export const getFramePages = async (fileKey) => {
-    let response = await axios.get(`/api/files/${fileKey}`)
+
+export const createFramePages = async (id) => {
+    let response = await axios.get(`/api/images/${id}`)
+    let res = await axios({
+        method: "GET",
+        url: `/api/images/${id}`,
+        headers: {
+            "Socket-Id": WebSocketManager.socket.id
+        }
+
+    })
     return response.data
 }
 
 export const createPdf = async (file) => {
 
     let response = await axios({
-        url: `/api/export`,
+        url: `/api/files/${file.id}/export`,
         method: 'POST',
         responseType: 'blob',
         data: {
             file
+        },
+        headers: {
+            "Socket-Id": WebSocketManager.socket.id
         }
     })
-    var blob = new Blob([response.data], { type: 'application/pdf' });;
-    var link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `${file.name}.pdf`;
-    link.click();
 
+    return response.data
 }
