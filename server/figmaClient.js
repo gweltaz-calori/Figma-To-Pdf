@@ -1,4 +1,5 @@
 const axios = require('axios')
+const https = require('https')
 const { performance } = require('perf_hooks')
 
 let axiosInstance = axios.create({
@@ -10,12 +11,14 @@ let axiosInstance = axios.create({
 
 module.exports = {
     async getFrames(key) {
+
+        let start = performance.now()
         let response = await axiosInstance.get(`files/${key}`)
-        let frames = response.data.document.children[0].children
-            .filter(child => child.type == "FRAME");
-        return this.getFramesWithImages(frames, key)
+        return response.data.document.children[0].children.filter(layer => layer.type === "FRAME")
+
     },
     async getFramesWithImages(frames, key) {
+
         let start = performance.now()
         let response = await axiosInstance.get(`images/${key}`, {
             params: {
@@ -31,7 +34,7 @@ module.exports = {
 
         let end = performance.now()
 
-        console.log(`Done in ${end - start} ms`)
+        console.log(`Done Image fetch in ${end - start} ms`)
 
 
         return frames

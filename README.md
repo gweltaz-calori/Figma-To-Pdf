@@ -7,6 +7,7 @@
 - Customize output (outline text, choose only specific frames, etc ...)
 - Oauth support
 - Better client
+- Drag Zip option
 
 # What tools
 

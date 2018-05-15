@@ -1,13 +1,16 @@
 <template>
-    <input ref="input" :type="type" :placeholder="placeholder">
+    <input :value="value" @input="onValueChanged($event.target.value)" ref="input" :type="type" :placeholder="placeholder">
 </template>
 
 <script>
 export default {
-  props: ["placeholder", "type"],
+  props: ["placeholder", "type", "value"],
   methods: {
     onContainerClicked() {
       this.$refs.input.focus();
+    },
+    onValueChanged(value) {
+      this.$emit("input", value);
     }
   }
 };
@@ -21,6 +24,7 @@ input {
   font-size: 13px;
   text-transform: uppercase;
   color: #685eff;
+  background-color: transparent;
 }
 
 input::placeholder {

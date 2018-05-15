@@ -1,6 +1,7 @@
 <template>
-  <div class="creator">
-      <figma-input placeholder="File name" class="file-title"></figma-input>
+  <generation-loader v-if="generating" :file="file"></generation-loader>
+  <div v-else-if="this.file.frames.length > 0" class="creator">
+      <figma-input v-model="file.name" placeholder="File name" class="file-title"></figma-input>
       <div class="content">
         <div class="export-header">
           <div class="settings">
@@ -11,50 +12,75 @@
           </div>
           <div class="buttons">
             <figma-button class="reset-button">reset</figma-button>
-            <figma-button theme="dark">create pdf</figma-button>
+            <figma-button @click.native="createPdf" theme="dark">create pdf</figma-button>
           </div>
         </div>
         <div class="export-pages">
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
-          <file-page-item class="export-page"></file-page-item>
+          <file-page-item :frame="frame" :key="frame.id" v-for="frame in file.frames" class="export-page"></file-page-item>
         </div>
       </div>
   </div>
+  <file-page-loader v-else :progress-value="progressValue" :step="loadingStep"></file-page-loader>
 </template>
 
 <script>
 import FigmaButton from "@/components/Common/FigmaButton.vue";
+import FilePageLoader from "@/components/Specific/FilePageLoader.vue";
+import GenerationLoader from "@/components/Specific/GenerationLoader.vue";
 import FigmaInput from "@/components/Common/FigmaInput.vue";
 import FilePageItem from "@/components/Specific/FilePageItem.vue";
-import FigmaProgress from "@/components/Common/FigmaProgress.vue";
 import FigmaRadioButton from "@/components/Common/FigmaRadioButton.vue";
+
+import { getFramePages, createPdf } from "@/api/index";
+
+import WS from "@/js/utils/ws";
+
 export default {
-  data() {
-    return {
-      file: {
-        options: {
-          textOutlines: false
-        },
-        pages: []
-      }
-    };
-  },
   components: {
     FigmaButton,
     FigmaInput,
     FilePageItem,
-    FigmaProgress,
-    FigmaRadioButton
+    FigmaRadioButton,
+    FilePageLoader,
+    GenerationLoader
+  },
+  data() {
+    return {
+      file: {
+        name: "",
+        version: "1.5",
+        options: {
+          textOutlines: false
+        },
+        frames: []
+      },
+      loadingStep: "Loading",
+      progressValue: 0,
+      generating: false
+    };
+  },
+  methods: {
+    createPdf() {
+      if (this.file.name.length == 0)
+        this.file.name = this.$route.params.fileId;
+      this.generating = true;
+    },
+    onFetchedFrameStep(data) {
+      this.loadingStep = data.step;
+    },
+    onComplete(data) {
+      this.file.frames = data.frames;
+    }
+  },
+  beforeDestroy() {
+    WS.off();
+  },
+  async mounted() {
+    WS.fetchFile({
+      fileId: this.$route.params.fileId
+    });
+    WS.onFetchedFrameStep(this.onFetchedFrameStep.bind(this));
+    WS.onComplete(this.onComplete.bind(this));
   }
 };
 </script>
@@ -76,6 +102,7 @@ export default {
   text-align: center;
   position: absolute;
   top: 34px;
+  width: 320px;
 }
 
 .export-header {

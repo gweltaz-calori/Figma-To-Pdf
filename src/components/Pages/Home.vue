@@ -9,8 +9,6 @@
 import FigmaButtonInput from "@/components/Common/FigmaButtonInput.vue";
 import FigmaTitle from "@/components/Common/FigmaTitle.vue";
 
-import { getFramePages } from "@/api/index";
-
 const FIGMA_URL_REGEX = /https:\/\/([w\.-]+.)?figma.com\/(file|proto)\/([0-9a-zA-Z]{22,128})(?:\/.*)?$/;
 
 export default {
@@ -28,9 +26,12 @@ export default {
         return;
       }
 
-      let fileKey = matches[3];
-
-      console.log(await getFramePages(fileKey));
+      this.$router.push({
+        name: "organize",
+        params: {
+          fileId: matches[3]
+        }
+      });
     }
   }
 };

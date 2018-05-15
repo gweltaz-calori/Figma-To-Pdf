@@ -1,18 +1,28 @@
 <template>
   <div class="page-item">
-    <div class="preview-container">
-      <div class="page-item-preview"></div>
+    <div class="preview-container" >
+      <div class="page-item-preview" >
+        <img class="preview-image" :style="bounds" :src="frame.imageUrl" alt="">
+      </div>
       <figma-action-button class="remove-button"></figma-action-button>
     </div>
-    <span class="page-item-number">2</span>
   </div>
 </template>
 
 <script>
 import FigmaActionButton from "@/components/Common/FigmaActionButton.vue";
 export default {
+  props: ["frame"],
   components: {
     FigmaActionButton
+  },
+  computed: {
+    bounds() {
+      return {
+        height: `${this.frame.absoluteBoundingBox.height / 4}px`,
+        width: `${this.frame.absoluteBoundingBox.width / 4}px`
+      };
+    }
   }
 };
 </script>
@@ -28,15 +38,17 @@ export default {
 .preview-container {
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .page-item-preview {
-  width: 238px;
-  height: 338px;
-  background: linear-gradient(180deg, #8d87e1 0%, #4b3eff 100%);
   border-radius: 5px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.11);
 }
 
 .page-item-number {
@@ -53,7 +65,12 @@ export default {
 }
 
 .remove-button {
-  position: absolute;
-  bottom: 25px;
+  margin-top: 9px;
+}
+
+.preview-image {
+  width: 100%;
+  height: auto;
+  background: linear-gradient(180deg, #8d87e1 0%, #4b3eff 100%);
 }
 </style>

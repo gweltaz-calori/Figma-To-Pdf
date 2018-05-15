@@ -1,18 +1,22 @@
 <template>
     <div class="progress">
-        <div ref="progressContent" class="progress-content" :style="{width:progress+'%'}" ></div>
+        <transition name="fade">
+          <div v-show="visible" ref="progressContent" class="progress-content" :style="{width:100+'%'}" ></div>
+        </transition>
         <div class="progress-background"></div>
     </div>
 </template>
 
 <script>
 export default {
-  props: {
-    progress: {
-      default: 50
-    }
+  data() {
+    return {
+      visible: false
+    };
   },
-  mounted() {}
+  mounted() {
+    this.visible = true;
+  }
 };
 </script>
 
@@ -38,5 +42,15 @@ export default {
   width: 50%;
   height: 100%;
   position: absolute;
+  transform: translateX(0%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: transform 120s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.fade-enter,
+.fade-leave-to {
+  transform: translateX(-100%);
 }
 </style>
