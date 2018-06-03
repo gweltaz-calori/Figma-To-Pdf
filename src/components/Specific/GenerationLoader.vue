@@ -1,5 +1,6 @@
 <template>
   <div class="loader">
+    <figma-button v-if="complete" class="back-button" :to="{name: 'home'}" theme="dark">create another pdf</figma-button>
     <figma-title>{{stepLabel}}</figma-title>
     <div v-if="!complete" class="progress-content">
         <figma-progress class="progress" :progress="(currentPage/file.frames.length)*100"></figma-progress>
@@ -48,7 +49,9 @@ export default {
       this.link.click();
     }
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    WebSocketManager.off();
+  },
   mounted() {
     createPdf(this.file).then(this.onPdfGenerated.bind(this));
     WebSocketManager.onPdfFrameStep(this.onPdfFrameStep.bind(this));
@@ -82,5 +85,11 @@ export default {
 
 .download {
   margin-top: 12px;
+}
+
+.back-button {
+  position: absolute;
+  top: 50px;
+  right: 50px;
 }
 </style>

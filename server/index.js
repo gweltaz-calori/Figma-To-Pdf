@@ -28,7 +28,15 @@ router.post('/files/:key/export', async (req, res) => {
             version: req.body.file.version
         }
 
-        for (let frame in req.body.file.frames) {
+        req.on('close', () => {
+            for (let framePath of pdfPaths) {
+                fs.unlink(framePath, () => {
+                    console.log('deleted ', framePath)
+                });
+            }
+        })
+
+        for (let frame in req.body.file.frames) { //don't export pdf in parallel to avoid increasing the memory
             notifyUser(req.headers['socket-id'], "ON_PDF_FRAME_STEP")
             let frameItem = req.body.file.frames[frame]
             let pdfFramePath = await convertFrameToPdf(frameItem.imageUrl, frame, exportOptions)
@@ -39,7 +47,7 @@ router.post('/files/:key/export', async (req, res) => {
         let pdfStream = await PDFMerge(pdfPaths, { output: 'Stream' })
 
         res.setHeader('Content-type', 'application/pdf')
-        pdfStream.on('end', function () {
+        pdfStream.on('end', function () { //delete if request experied
             for (let framePath of pdfPaths) {
                 fs.unlink(framePath, () => {
                     console.log('deleted ', framePath)
@@ -56,6 +64,7 @@ router.post('/files/:key/export', async (req, res) => {
 })
 
 router.get('/images/:key', async (req, res) => {
+
     try {
         notifyUser(req.headers['socket-id'], "ON_FRAME_STEP", {
             step: "Fetching Frames"
@@ -64,9 +73,7 @@ router.get('/images/:key', async (req, res) => {
         notifyUser(req.headers['socket-id'], "ON_FRAME_STEP", {
             step: "Creating Images"
         })
-        let framesImages = await FigmaClient.getFramesWithImages(frames, req.params.key)
-
-        res.send(framesImages)
+        res.send(await FigmaClient.getFramesWithImages(frames, req.params.key))
     }
     catch (e) {
         res.status(400).send('Invalid file key')

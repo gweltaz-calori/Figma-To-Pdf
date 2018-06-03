@@ -4,7 +4,7 @@
       <div class="page-item-preview" >
         <img class="preview-image" :style="bounds" :src="frame.imageUrl" alt="">
       </div>
-      <figma-action-button class="remove-button"></figma-action-button>
+      <figma-action-button @click.native="remove" class="remove-button"></figma-action-button>
     </div>
   </div>
 </template>
@@ -22,6 +22,11 @@ export default {
         height: `${this.frame.absoluteBoundingBox.height / 4}px`,
         width: `${this.frame.absoluteBoundingBox.width / 4}px`
       };
+    }
+  },
+  methods: {
+    remove() {
+      this.$emit("onRemoved");
     }
   }
 };
@@ -47,8 +52,10 @@ export default {
   border-radius: 5px;
   display: inline-flex;
   justify-content: center;
-  align-items: center;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.11);
+  align-items: center; /* 
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.11); */
+  height: 256px;
+  width: 360px;
 }
 
 .page-item-number {
@@ -72,5 +79,6 @@ export default {
   width: 100%;
   height: auto;
   background: linear-gradient(180deg, #8d87e1 0%, #4b3eff 100%);
+  pointer-events: none;
 }
 </style>

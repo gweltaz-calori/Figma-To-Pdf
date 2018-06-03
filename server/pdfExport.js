@@ -15,7 +15,7 @@ module.exports = {
                     .pipe(svgToPdfConverter)
                     .pipe(fs.createWriteStream(exportedPdfUrl))
                     .on('finish', () => resolve(exportedPdfUrl))
-            })
+            }).on('error', () => reject('Image server is down'))
         })
     }
 } 

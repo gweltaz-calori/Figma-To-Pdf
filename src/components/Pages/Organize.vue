@@ -11,12 +11,27 @@
             </div> 
           </div>
           <div class="buttons">
-            <figma-button class="reset-button">reset</figma-button>
+            <figma-button  @click.native="reset" class="reset-button">reset</figma-button>
             <figma-button @click.native="generatePdf" theme="dark">create pdf</figma-button>
           </div>
         </div>
-        <div class="export-pages">
-          <file-page-item :frame="frame" :key="frame.id" v-for="frame in file.frames" class="export-page"></file-page-item>
+        <div class="export-content">
+          <transition-group name="frames-transition-list" ref="grid" class="frames-list">
+            <file-page-item class="export-page" :id="frame.id"  v-for="(frame,index) in filteredFrames" :key="frame.id"  @onRemoved="remove(frame)" :frame="frame" ></file-page-item>
+          </transition-group>
+          <div class="frame-order">
+            <div class="selected-frames">Selected Frames</div>
+              <draggable-row-container :items="file.frames" class="draggables-frames" >
+                <figma-draggable-frame 
+                :index="index" 
+                :frame="frame"
+                :margin="{'bottom':5}" 
+                :key="frame.id" :size="40" 
+                v-for="(frame,index) in file.frames" 
+                class="draggable-frame">
+              </figma-draggable-frame>
+            </draggable-row-container>
+          </div>
         </div>
       </div>
   </div>
@@ -24,12 +39,16 @@
 </template>
 
 <script>
+import { ItemMd } from "vue-muuri";
 import FigmaButton from "@/components/Common/FigmaButton.vue";
 import FilePageLoader from "@/components/Specific/FilePageLoader.vue";
 import GenerationLoader from "@/components/Specific/GenerationLoader.vue";
 import FigmaInput from "@/components/Common/FigmaInput.vue";
 import FilePageItem from "@/components/Specific/FilePageItem.vue";
+import FilePageItems from "@/components/Specific/FilePageItems.vue";
 import FigmaRadioButton from "@/components/Common/FigmaRadioButton.vue";
+import FigmaDraggableFrame from "@/components/Specific/FigmaDraggableFrame.vue";
+import DraggableRowContainer from "@/components/Common/DraggableRowContainer.vue";
 
 import { createFramePages } from "@/api/index";
 
@@ -40,9 +59,13 @@ export default {
     FigmaButton,
     FigmaInput,
     FilePageItem,
+    FilePageItems,
     FigmaRadioButton,
     FilePageLoader,
-    GenerationLoader
+    GenerationLoader,
+    FigmaDraggableFrame,
+    DraggableRowContainer,
+    ItemMd
   },
   data() {
     return {
@@ -60,6 +83,11 @@ export default {
       generating: false
     };
   },
+  computed: {
+    filteredFrames() {
+      return this.file.frames.filter(frame => frame.enabled);
+    }
+  },
   methods: {
     generatePdf() {
       if (this.file.name.length == 0) this.file.name = this.file.id;
@@ -67,11 +95,24 @@ export default {
     },
     onFrameStep(data) {
       this.loadingStep = data.step;
+    },
+    remove(frame) {
+      frame.enabled = false;
+    },
+    reset() {
+      for (let frame of this.file.frames) {
+        frame.enabled = true;
+      }
+    },
+    updateFrameOrder(frames) {
+      //console.log(frames);
     }
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    WebSocketManager.off();
+  },
 
-  async mounted() {
+  mounted() {
     createFramePages(this.$route.params.fileId).then(frames => {
       this.file.frames = frames;
     });
@@ -105,15 +146,10 @@ export default {
   align-items: center;
 }
 
-.export-pages {
-  margin-top: 38px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
 .export-page {
-  margin: 5px;
+  margin: 5px; /* 
+  position: absolute; */
+  z-index: 1;
 }
 
 .buttons {
@@ -126,7 +162,8 @@ export default {
   margin-right: 10px;
 }
 
-.options-title {
+.options-title,
+.selected-frames {
   font-style: normal;
   font-weight: 900;
   line-height: normal;
@@ -136,5 +173,31 @@ export default {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 8px;
+}
+
+.frames-list {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.frames-transition-list-move {
+  transition: transform 0.3s;
+}
+
+.export-content {
+  display: flex;
+  margin-top: 38px;
+  justify-content: center;
+}
+
+.draggables-frames {
+  width: 163.68px;
+  position: relative;
+}
+
+.draggable-frame {
+  margin-bottom: 5px;
 }
 </style>

@@ -15,4 +15,9 @@ export default class WebSocketManager {
     static onPdfFrameStep(cb) {
         this.socket.on(ON_PDF_FRAME_STEP, cb)
     }
+
+    static off() {
+        this.socket.off(ON_FRAME_STEP)
+        this.socket.off(ON_PDF_FRAME_STEP)
+    }
 }

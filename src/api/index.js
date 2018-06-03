@@ -3,8 +3,7 @@ import WebSocketManager from "@/js/utils/ws";
 
 
 export const createFramePages = async (id) => {
-    let response = await axios.get(`/api/images/${id}`)
-    let res = await axios({
+    let response = await axios({
         method: "GET",
         url: `/api/images/${id}`,
         headers: {

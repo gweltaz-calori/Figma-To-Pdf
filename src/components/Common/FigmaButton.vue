@@ -1,6 +1,6 @@
 <template>
     <a class="button" :class="theme" v-if="href" href=""><slot></slot></a>
-    <router-link :class="theme" class="button" v-else-if="to">
+    <router-link :to="to" :class="theme" class="button" v-else-if="to">
         <slot></slot>
     </router-link>
     <button :class="theme" class="button" v-else>
@@ -34,6 +34,7 @@ export default {
   text-align: center;
   padding: 9px 18px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .light {
