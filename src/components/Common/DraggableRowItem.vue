@@ -45,7 +45,6 @@ export default {
       onDragStart: this.onDragStart,
       onRelease: this.onRelease,
       onDrag: this.onDrag,
-      cursor: "inherit",
       type: "y"
     });
 

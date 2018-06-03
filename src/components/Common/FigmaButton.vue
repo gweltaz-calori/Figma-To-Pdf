@@ -1,9 +1,9 @@
 <template>
-    <a class="button" :class="theme" v-if="href" href=""><slot></slot></a>
-    <router-link :to="to" :class="theme" class="button" v-else-if="to">
+    <a class="button" :class="[theme,{'disabled':disabled}]" v-if="href" href=""><slot></slot></a>
+    <router-link :to="to" :class="[theme,{'disabled':disabled}]" class="button" v-else-if="to">
         <slot></slot>
     </router-link>
-    <button :class="theme" class="button" v-else>
+    <button :class="[theme,{'disabled':disabled}]" class="button" v-else>
         <slot></slot>
     </button>
 </template>
@@ -15,7 +15,10 @@ export default {
       default: "light"
     },
     href: {},
-    to: {}
+    to: {},
+    disabled: {
+      default: false
+    }
   }
 };
 </script>
@@ -48,5 +51,10 @@ export default {
 .dark {
   color: white;
   background: linear-gradient(180deg, #8d87e1 0%, #4b3eff 100%);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
 }
 </style>

@@ -3,7 +3,15 @@
         <div class="frame-index">{{index}}</div>
         <div class="frame-name">{{frame.name}}</div>
         <div class="frame-actions">
-            <div class="frame-action"></div>
+            <div class="frame-action"> 
+              <svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="1.37119" height="10.8855" transform="translate(3.9823 1.59933)" fill="white"/>
+                <rect width="5.6407" height="1.26481" rx="0.632403" transform="translate(8.68042 10.176) rotate(135)" fill="white"/>
+                <rect width="5.6407" height="1.26481" rx="0.632403" transform="translate(0.655762 10.176) scale(1 -1) rotate(-45)" fill="white"/>
+                <rect width="5.6407" height="1.26481" rx="0.632403" transform="translate(8.68042 4.6936) scale(-1 1) rotate(-45)" fill="white"/>
+                <rect width="5.6407" height="1.26481" rx="0.632403" transform="translate(0.655762 4.6936) rotate(-45)" fill="white"/>
+              </svg>
+            </div>
         </div>
     </draggable-row-item>
 </template>
@@ -59,5 +67,9 @@ export default {
   margin-left: 8px;
 
   color: #ffffff;
+}
+
+.frame-actions {
+  margin-left: auto;
 }
 </style>

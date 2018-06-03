@@ -3,8 +3,8 @@
     <figma-button v-if="complete" class="back-button" :to="{name: 'home'}" theme="dark">create another pdf</figma-button>
     <figma-title>{{stepLabel}}</figma-title>
     <div v-if="!complete" class="progress-content">
-        <figma-progress class="progress" :progress="(currentPage/file.frames.length)*100"></figma-progress>
-        <span class="progress-label">Processing page {{currentPage}}/{{file.frames.length}}</span>
+        <figma-progress class="progress" :progress="(currentPage/frames.length)*100"></figma-progress>
+        <span class="progress-label">Processing page {{currentPage}}/{{frames.length}}</span>
     </div>
     <figma-button class="download" v-else @click.native="download" >download again</figma-button>
   </div>
@@ -17,7 +17,7 @@ import FigmaButton from "@/components/Common/FigmaButton.vue";
 import FigmaTitle from "@/components/Common/FigmaTitle.vue";
 import FigmaProgress from "@/components/Common/FigmaProgress.vue";
 export default {
-  props: ["file"],
+  props: ["file", "frames"],
   components: {
     FigmaTitle,
     FigmaProgress,
@@ -53,7 +53,7 @@ export default {
     WebSocketManager.off();
   },
   mounted() {
-    createPdf(this.file).then(this.onPdfGenerated.bind(this));
+    createPdf(this.file, this.frames).then(this.onPdfGenerated.bind(this));
     WebSocketManager.onPdfFrameStep(this.onPdfFrameStep.bind(this));
   }
 };

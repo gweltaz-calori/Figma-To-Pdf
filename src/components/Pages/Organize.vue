@@ -1,5 +1,5 @@
 <template>
-  <generation-loader v-if="generating" :file="file"></generation-loader>
+  <generation-loader v-if="generating" :file="file" :frames="filteredFrames"></generation-loader>
   <div v-else-if="this.file.frames.length > 0" class="creator">
       <figma-input v-model="file.name" placeholder="File name" class="file-title"></figma-input>
       <div class="content">
@@ -11,8 +11,12 @@
             </div> 
           </div>
           <div class="buttons">
-            <figma-button  @click.native="reset" class="reset-button">reset</figma-button>
-            <figma-button @click.native="generatePdf" theme="dark">create pdf</figma-button>
+            <div class="buttons-container">
+              <figma-button  @click.native="reset" class="reset-button">reset</figma-button>
+              <figma-button  @click.native="cancel" class="reset-button">undo</figma-button>
+              <figma-button @click.native="generatePdf" :disabled="filteredFrames.length == 0" theme="dark">create pdf</figma-button>
+            </div>
+            <figma-flash class="error-message" v-show="filteredFrames.length == 0">You need to have at least one frame</figma-flash>
           </div>
         </div>
         <div class="export-content">
@@ -21,13 +25,14 @@
           </transition-group>
           <div class="frame-order">
             <div class="selected-frames">Selected Frames</div>
+            <p class="order-description">Simply drag frames in the order you want</p>
               <draggable-row-container :items="file.frames" class="draggables-frames" >
                 <figma-draggable-frame 
                 :index="index" 
                 :frame="frame"
                 :margin="{'bottom':5}" 
                 :key="frame.id" :size="40" 
-                v-for="(frame,index) in file.frames" 
+                v-for="(frame,index) in filteredFrames" 
                 class="draggable-frame">
               </figma-draggable-frame>
             </draggable-row-container>
@@ -49,10 +54,13 @@ import FilePageItems from "@/components/Specific/FilePageItems.vue";
 import FigmaRadioButton from "@/components/Common/FigmaRadioButton.vue";
 import FigmaDraggableFrame from "@/components/Specific/FigmaDraggableFrame.vue";
 import DraggableRowContainer from "@/components/Common/DraggableRowContainer.vue";
+import FigmaFlash from "@/components/Common/FigmaFlash.vue";
 
 import { createFramePages } from "@/api/index";
 
 import WebSocketManager from "@/js/utils/ws";
+
+const REMOVE_FRAME = "REMOVE_FRAME";
 
 export default {
   components: {
@@ -65,6 +73,7 @@ export default {
     GenerationLoader,
     FigmaDraggableFrame,
     DraggableRowContainer,
+    FigmaFlash,
     ItemMd
   },
   data() {
@@ -80,7 +89,8 @@ export default {
       },
       loadingStep: "Loading",
       progressValue: 0,
-      generating: false
+      generating: false,
+      historyStack: []
     };
   },
   computed: {
@@ -90,22 +100,36 @@ export default {
   },
   methods: {
     generatePdf() {
+      if (this.filteredFrames.length == 0) return false;
       if (this.file.name.length == 0) this.file.name = this.file.id;
       this.generating = true;
     },
     onFrameStep(data) {
       this.loadingStep = data.step;
     },
-    remove(frame) {
+    remove(frame, index) {
       frame.enabled = false;
+      this.historyStack.push({
+        type: REMOVE_FRAME,
+        id: frame.id
+      });
     },
     reset() {
       for (let frame of this.file.frames) {
         frame.enabled = true;
       }
     },
-    updateFrameOrder(frames) {
-      //console.log(frames);
+    cancel() {
+      let lastAction = this.historyStack.pop();
+
+      if (!lastAction) return;
+
+      switch (lastAction.type) {
+        case REMOVE_FRAME:
+          let frame = this.file.frames.find(frame => frame.id == lastAction.id);
+          frame.enabled = true;
+          break;
+      }
     }
   },
   beforeDestroy() {
@@ -152,10 +176,18 @@ export default {
   z-index: 1;
 }
 
+.frame-order {
+  margin-left: 20px;
+}
+
 .buttons {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   margin-left: auto;
+}
+
+.buttons-container {
+  display: flex;
 }
 
 .reset-button {
@@ -179,6 +211,7 @@ export default {
   position: relative;
   display: flex;
   flex-wrap: wrap;
+  width: 1131px;
   justify-content: center;
 }
 
@@ -199,5 +232,19 @@ export default {
 
 .draggable-frame {
   margin-bottom: 5px;
+}
+
+.order-description {
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  font-size: 11px;
+  color: #4b3eff99;
+  margin-bottom: 21px;
+}
+
+.error-message {
+  margin-top: 5px;
+  margin-left: auto;
 }
 </style>
