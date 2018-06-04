@@ -1,11 +1,12 @@
 const env = require("./env");
+const hummus = require("hummus");
+const path = require("path");
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const fs = require("fs");
 const RateLimit = require("express-rate-limit");
 const bodyParser = require("body-parser");
-const PDFMerge = require("pdf-merge");
 
 const app = express();
 const server = http.createServer(app);
@@ -27,42 +28,28 @@ router.post("/files/:key/export", async (req, res) => {
       version: req.body.file.version
     };
 
-    req.on("close", () => {
-      for (let framePath of pdfPaths) {
-        fs.unlink(framePath, () => {
-          console.log("deleted ", framePath);
-        });
-      }
+    res.writeHead(200, { "Content-Type": "application/pdf" });
+
+    let pdfWriter = hummus.createWriter(new hummus.PDFStreamForResponse(res), {
+      version: hummus.ePDFVersion15
     });
 
     for (let frame in req.body.file.frames) {
       //don't export pdf in parallel to avoid increasing the memory
-      notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP");
+
       let frameItem = req.body.file.frames[frame];
-      let pdfFramePath = await convertFrameToPdf(
-        frameItem.imageUrl,
-        frame,
-        exportOptions
+
+      pdfWriter.appendPDFPagesFromPDF(
+        new hummus.PDFRStreamForBuffer(
+          await convertFrameToPdf(frameItem.imageUrl, frame, exportOptions)
+        )
       );
-      pdfPaths.push(pdfFramePath);
+
+      notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP");
     }
 
-    if (req.body.file.frames.length > 1) {
-      let pdfStream = await PDFMerge(pdfPaths, { output: "Stream" });
-
-      res.setHeader("Content-type", "application/pdf");
-      pdfStream.on("end", function() {
-        //delete if request experied
-        for (let framePath of pdfPaths) {
-          fs.unlink(framePath, () => {
-            console.log("deleted ", framePath);
-          });
-        }
-      });
-      pdfStream.pipe(res);
-    } else {
-      fs.createReadStream(pdfPaths[0]).pipe(res);
-    }
+    pdfWriter.end();
+    res.end();
   } catch (e) {
     console.log(e);
     res.status(400).send("An error occured during the export");

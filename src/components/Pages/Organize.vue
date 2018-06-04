@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import { ItemMd } from "vue-muuri";
 import FigmaButton from "@/components/Common/FigmaButton.vue";
 import FilePageLoader from "@/components/Specific/FilePageLoader.vue";
 import GenerationLoader from "@/components/Specific/GenerationLoader.vue";
@@ -73,8 +72,7 @@ export default {
     GenerationLoader,
     FigmaDraggableFrame,
     DraggableRowContainer,
-    FigmaFlash,
-    ItemMd
+    FigmaFlash
   },
   data() {
     return {

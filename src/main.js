@@ -1,21 +1,16 @@
-import App from '@/App.vue';
+import App from "@/App.vue";
 
-import Vue from 'vue';
-import router from './router/index'
-import store from './store/index'
-import VueMuuri from "vue-muuri";
+import Vue from "vue";
+import router from "./router/index";
+import store from "./store/index";
 
+import WebSocketManager from "@/js/utils/ws";
 
-Vue.use(VueMuuri);
-
-
-import WebSocketManager from '@/js/utils/ws'
-
-WebSocketManager.init()
+WebSocketManager.init();
 
 new Vue({
-    el: '#app',
-    router,
-    store,
-    render: h => h(App)
+  el: "#app",
+  router,
+  store,
+  render: h => h(App)
 });
