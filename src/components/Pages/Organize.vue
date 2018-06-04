@@ -52,7 +52,6 @@
 
 <script>
 import FigmaButton from "@/components/Common/FigmaButton.vue";
-import FilePageLoader from "@/components/Specific/FilePageLoader.vue";
 import GenerationLoader from "@/components/Specific/GenerationLoader.vue";
 import FigmaInput from "@/components/Common/FigmaInput.vue";
 import FilePageItem from "@/components/Specific/FilePageItem.vue";
@@ -75,7 +74,6 @@ export default {
     FilePageItem,
     FilePageItems,
     FigmaRadioButton,
-    FilePageLoader,
     GenerationLoader,
     FigmaDraggableFrame,
     DraggableRowContainer,
