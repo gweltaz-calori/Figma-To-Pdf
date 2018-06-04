@@ -1,21 +1,18 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-import Home from '@/components/Pages/Home.vue'
-import Organize from '@/components/Pages/Organize.vue'
+import Home from "@/components/Pages/Home.vue";
+import Organize from "@/components/Pages/Organize.vue";
 
-Vue.use(VueRouter)
-
+Vue.use(VueRouter);
 
 const routes = [
-    { path: '/', name: 'home', component: Home },
-    { path: '/organize/:fileId', name: 'organize', component: Organize },
-]
-
+  { path: "/", name: "home", component: Home },
+  { path: "/organize/:fileId", name: "organize", component: Organize },
+  { path: "*", redirect: { name: "home" } }
+];
 
 export default new VueRouter({
-    routes,
-    mode: "history"
-})
-
-
+  routes,
+  mode: "history"
+});
