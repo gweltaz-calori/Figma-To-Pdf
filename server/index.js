@@ -77,8 +77,14 @@ router.get("/images/:key", async (req, res) => {
   }
 });
 
-app.get("*", () => {
+app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../dist/index.html"));
+});
+
+app.use((req, res, next) => {
+  res.status(404).send({
+    message: "Not found"
+  });
 });
 
 server.listen(process.env.SERVER_PORT, () => {
