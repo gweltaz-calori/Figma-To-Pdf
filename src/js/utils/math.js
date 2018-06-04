@@ -1,5 +1,6 @@
 export const arrayMove = (array, from, to) => {
-  array.splice(to, 0, array.splice(from, 1)[0]);
+  array[from] = array.splice(to, 1, array[from])[0];
+  return array;
 };
 
 export const clamp = (value, a, b) => {

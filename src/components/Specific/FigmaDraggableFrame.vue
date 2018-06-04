@@ -1,5 +1,5 @@
 <template>
-    <draggable-row-item :margin="margin" :size="size" :index="index" class="frame">
+    <draggable-row-item :margin="margin" :size="size" :class="{'disabled':!frame.enabled}" :index="index" class="frame">
         <div class="frame-index">{{index}}</div>
         <div class="frame-name">{{frame.name}}</div>
         <div class="frame-actions">
@@ -71,5 +71,9 @@ export default {
 
 .frame-actions {
   margin-left: auto;
+}
+
+.disabled {
+  opacity: 0.2;
 }
 </style>

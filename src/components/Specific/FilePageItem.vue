@@ -2,7 +2,7 @@
   <div class="page-item">
     <div class="preview-container" >
       <div class="page-item-preview" >
-        <img class="preview-image" :style="bounds" :src="frame.imageUrl" alt="">
+        <img class="preview-image" :src="frame.imageUrl" alt="">
       </div>
       <figma-action-button @click.native="remove" class="remove-button"></figma-action-button>
     </div>
@@ -54,7 +54,6 @@ export default {
   justify-content: center;
   align-items: center; /* 
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.11); */
-  height: 256px;
   width: 360px;
 }
 

@@ -36,17 +36,23 @@ export default {
       TweenLite.to(this.$el, 0.3, { y: this.index * this.size });
     }
   },
+  beforeDestroy() {
+    this.dragger.removeEventListener("dragstart", this.onDragStart);
+    this.dragger.removeEventListener("release", this.onRelease);
+    this.dragger.removeEventListener("drag", this.onDrag);
+  },
   mounted() {
     TweenLite.set(this.$el, {
       height: this.size - this.margin.bottom,
       y: this.index * this.size
     });
     this.dragger = new Draggable(this.$el, {
-      onDragStart: this.onDragStart,
-      onRelease: this.onRelease,
-      onDrag: this.onDrag,
       type: "y"
     });
+
+    this.dragger.addEventListener("dragstart", this.onDragStart);
+    this.dragger.addEventListener("release", this.onRelease);
+    this.dragger.addEventListener("drag", this.onDrag);
 
     this.animation = TweenLite.to(this.$el, 0.3, {
       boxShadow: "rgba(0,0,0,0.2) 0px 16px 32px 0px",

@@ -7,7 +7,8 @@
           <div class="settings">
             <h2 class="options-title">options</h2>
             <div class="options">
-              <figma-radio-button label="Text outlines" v-model="file.options.textOutlines"></figma-radio-button>
+              Coming soon
+              <!-- <figma-radio-button label="Text outlines" v-model="file.options.textOutlines"></figma-radio-button> -->
             </div> 
           </div>
           <div class="buttons">
@@ -21,7 +22,7 @@
         </div>
         <div class="export-content">
           <transition-group name="frames-transition-list" ref="grid" class="frames-list">
-            <file-page-item class="export-page" :id="frame.id"  v-for="(frame,index) in filteredFrames" :key="frame.id"  @onRemoved="remove(frame)" :frame="frame" ></file-page-item>
+            <file-page-item class="export-page" :id="frame.id"  v-for="frame in filteredFrames" :key="frame.id"  @onRemoved="remove(frame)" :frame="frame" ></file-page-item>
           </transition-group>
           <div class="frame-order">
             <div class="selected-frames">Selected Frames</div>
@@ -32,7 +33,7 @@
                 :frame="frame"
                 :margin="{'bottom':5}" 
                 :key="frame.id" :size="40" 
-                v-for="(frame,index) in filteredFrames" 
+                v-for="(frame,index) in file.frames" 
                 class="draggable-frame">
               </figma-draggable-frame>
             </draggable-row-container>
@@ -190,6 +191,12 @@ export default {
 
 .reset-button {
   margin-right: 10px;
+}
+
+.options {
+  color: #4b3eff;
+  font-weight: 500;
+  font-size: 12px;
 }
 
 .options-title,

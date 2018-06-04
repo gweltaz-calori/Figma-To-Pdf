@@ -16,8 +16,9 @@ export default {
       var index = clamp(
         Math.round(item.y / item.size),
         0,
-        this.$el.children.length - 1
+        this.items.length - 1
       );
+
       if (index !== item.index) {
         this.changeIndex(item, index);
       }
