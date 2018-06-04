@@ -77,7 +77,7 @@ router.get("/images/:key", async (req, res) => {
   }
 });
 
-app.get("/", () => {
+app.get("*", () => {
   res.sendFile(path.resolve(__dirname, "../dist/index.html"));
 });
 
