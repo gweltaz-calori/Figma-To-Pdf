@@ -3,7 +3,7 @@
         <figma-title>Figma pdf</figma-title>
         <p class="description">The easiest way to convert figma files into pdf</p>
         <figma-button-input v-model="figmaFileUrl" @onButtonClicked="validateFigmaUrl" class="file-input" placeholder="File url"></figma-button-input>
-        <span>Or <a href="/api/auth">login</a> using Oauth</span>
+        <!-- <span>Or <a href="/api/auth">login</a> using Oauth</span> -->
     </div>
 </template>
 <script>

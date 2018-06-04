@@ -22,7 +22,13 @@
         </div>
         <div class="export-content">
           <transition-group name="frames-transition-list" ref="grid" class="frames-list">
-            <file-page-item class="export-page" :id="frame.id"  v-for="frame in filteredFrames" :key="frame.id"  @onRemoved="remove(frame)" :frame="frame" ></file-page-item>
+            <file-page-item 
+            class="export-page" 
+            :id="frame.id"  
+            v-for="frame in file.frames" 
+            :key="frame.id"
+            @onRemoved="remove(frame)" 
+            :frame="frame" ></file-page-item>
           </transition-group>
           <div class="frame-order">
             <div class="selected-frames">Selected Frames</div>
@@ -107,11 +113,14 @@ export default {
       this.loadingStep = data.step;
     },
     remove(frame, index) {
-      frame.enabled = false;
-      this.historyStack.push({
-        type: REMOVE_FRAME,
-        id: frame.id
-      });
+      frame.enabled = !frame.enabled;
+
+      if (!frame.enabled) {
+        this.historyStack.push({
+          type: REMOVE_FRAME,
+          id: frame.id
+        });
+      }
     },
     reset() {
       for (let frame of this.file.frames) {

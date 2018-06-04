@@ -1,5 +1,5 @@
 <template>
-  <div class="page-item">
+  <div class="page-item" :class="{'disabled':!frame.enabled}">
     <div class="preview-container" >
       <div class="page-item-preview" >
         <img class="preview-image" :src="frame.imageUrl" alt="">
@@ -79,5 +79,9 @@ export default {
   height: auto;
   background: linear-gradient(180deg, #8d87e1 0%, #4b3eff 100%);
   pointer-events: none;
+}
+
+.disabled {
+  opacity: 0.5;
 }
 </style>

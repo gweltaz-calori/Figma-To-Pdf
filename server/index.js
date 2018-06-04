@@ -12,59 +12,18 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const server = http.createServer(app);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+  path: "/ws"
+});
 const router = express.Router();
-const FigmaStrategy = require("./figmaPassport").Strategy;
 
 const FigmaClient = require("./figmaClient");
 const { convertFrameToPdf } = require("./pdfExport");
 
-app.use(passport.initialize());
-
-app.use(
-  session({
-    resave: false,
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false
-  })
-);
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-passport.use(
-  new FigmaStrategy(
-    {
-      clientID: process.env.FIGMA_CLIENT_ID,
-      clientSecret: process.env.FIGMA_CLIENT_SECRET,
-      callbackURL: `http://127.0.0.1:${
-        process.env.SERVER_PORT
-      }/api/auth/callback`,
-      state: true,
-      session: false
-    },
-    function(accessToken, refreshToken, profile, done) {
-      done(null, {
-        accessToken,
-        refreshToken
-      });
-    }
-  )
-);
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static("dist"));
 app.use("/api", router);
-
-router.get("/auth", passport.authenticate("figma"));
-
-router.get("/auth/callback", passport.authenticate("figma"), (req, res) => {
-  // Successful authentication, redirect home.
-  console.log(req.session);
-  res.redirect("/");
-});
 
 router.post("/files/:key/export", async (req, res) => {
   try {
@@ -116,6 +75,10 @@ router.get("/images/:key", async (req, res) => {
   } catch (e) {
     res.status(400).send("Invalid file key");
   }
+});
+
+app.get("/", () => {
+  res.sendFile(path.resolve(__dirname, "../dist/index.html"));
 });
 
 server.listen(process.env.SERVER_PORT, () => {
