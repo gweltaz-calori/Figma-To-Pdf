@@ -9,7 +9,7 @@ Vue.use(VueRouter);
 const routes = [
   { path: "/", name: "home", component: Home },
   { path: "/organize/:fileId", name: "organize", component: Organize },
-  { path: "*", redirect: { name: "home" } }
+  { path: "*", redirect: "/" }
 ];
 
 export default new VueRouter({

@@ -53,6 +53,7 @@
 <script>
 import FigmaButton from "@/components/Common/FigmaButton.vue";
 import GenerationLoader from "@/components/Specific/GenerationLoader.vue";
+import FilePageLoader from "@/components/Specific/FilePageLoader.vue";
 import FigmaInput from "@/components/Common/FigmaInput.vue";
 import FilePageItem from "@/components/Specific/FilePageItem.vue";
 import FilePageItems from "@/components/Specific/FilePageItems.vue";
@@ -77,7 +78,8 @@ export default {
     GenerationLoader,
     FigmaDraggableFrame,
     DraggableRowContainer,
-    FigmaFlash
+    FigmaFlash,
+    FilePageLoader
   },
   data() {
     return {
