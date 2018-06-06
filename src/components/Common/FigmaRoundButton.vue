@@ -14,6 +14,6 @@ button {
   width: 46px;
   height: 46px;
   cursor: pointer;
-  background: rgba(42, 32, 189, 0.6);
+  background: rgba(255, 255, 255, 0.18);
 }
 </style>

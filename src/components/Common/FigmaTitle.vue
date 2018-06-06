@@ -1,6 +1,16 @@
 <template>
-  <h1><slot></slot></h1>
+  <h1 :class="color"><slot></slot></h1>
 </template>
+<script>
+export default {
+  props: {
+    color: {
+      default: "dark"
+    }
+  }
+};
+</script>
+
 <style scoped>
 h1 {
   font-style: normal;
@@ -14,5 +24,11 @@ h1 {
   background: -webkit-linear-gradient(180deg, #8d87e1 0%, #685eff 100%), #c4c4c4;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.white {
+  color: white;
+  background: transparent;
+  -webkit-text-fill-color: inherit;
 }
 </style>
