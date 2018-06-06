@@ -6,11 +6,6 @@ import store from "./store/index";
 
 import WebSocketManager from "@/js/utils/ws";
 
-WebSocketManager.init();
-
-new Vue({
-  el: "#app",
-  router,
-  store,
-  render: h => h(App)
+WebSocketManager.init(() => {
+  new Vue({ el: "#app", router, store, render: h => h(App) });
 });

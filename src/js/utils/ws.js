@@ -4,8 +4,9 @@ const ON_FRAME_STEP = "ON_FRAME_STEP";
 const ON_PDF_FRAME_STEP = "ON_PDF_FRAME_STEP";
 
 export default class WebSocketManager {
-  static init() {
+  static init(cb) {
     this.socket = io({ path: "/ws" });
+    this.socket.on("connect", cb);
   }
 
   static onFrameStep(cb) {
