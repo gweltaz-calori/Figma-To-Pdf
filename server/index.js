@@ -45,13 +45,20 @@ router.post("/files/:key/export", async (req, res) => {
 
       let frameItem = req.body.file.frames[frame];
 
-      pdfWriter.appendPDFPagesFromPDF(
-        new hummus.PDFRStreamForBuffer(
-          await convertFrameToPdf(frameItem.imageUrl, frame, exportOptions)
-        )
-      );
-
-      notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP");
+      try {
+        pdfWriter.appendPDFPagesFromPDF(
+          new hummus.PDFRStreamForBuffer(
+            await convertFrameToPdf(frameItem.imageUrl, frame, exportOptions)
+          )
+        );
+        notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP", {
+          action: "PROCESSED"
+        });
+      } catch (e) {
+        notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP", {
+          action: "SKIP"
+        });
+      }
     }
 
     pdfWriter.end();
@@ -73,6 +80,7 @@ router.get("/images/:key", async (req, res) => {
     });
     res.send(await FigmaClient.getFramesWithImages(frames, req.params.key));
   } catch (e) {
+    console.log(e);
     res.status(400).send("Invalid file key");
   }
 });

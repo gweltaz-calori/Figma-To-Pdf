@@ -4,7 +4,7 @@
     <figma-title>{{stepLabel}}</figma-title>
     <div v-if="!complete" class="progress-content">
         <figma-progress class="progress" :progress="(currentPage/frames.length)*100"></figma-progress>
-        <span class="progress-label">Processing page {{currentPage}}/{{frames.length}}</span>
+        <span class="progress-label">{{getAction}} page {{currentPage}}/{{frames.length}}</span>
     </div>
     <figma-button class="download" v-else @click.native="download" >download again</figma-button>
   </div>
@@ -27,12 +27,19 @@ export default {
     return {
       currentPage: 0,
       stepLabel: "GENERATION STARTED",
-      complete: false
+      complete: false,
+      action: "PROCESSED"
     };
   },
+  computed: {
+    getAction() {
+      return this.action == "SKIP" ? "Skipping" : "Processing";
+    }
+  },
   methods: {
-    onPdfFrameStep() {
+    onPdfFrameStep(data) {
       this.currentPage++;
+      this.action = data.action;
     },
     onPdfGenerated(data) {
       this.stepLabel = "PDF GENERATED";

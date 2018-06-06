@@ -14,7 +14,7 @@ module.exports = {
     let start = performance.now();
     let response = await axiosInstance.get(`files/${key}`);
     return response.data.document.children[0].children.filter(
-      layer => layer.type === "FRAME"
+      layer => layer.type === "FRAME" || layer.type === "GROUP"
     );
   },
   async getFramesWithImages(frames, key) {
