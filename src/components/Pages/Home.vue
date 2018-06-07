@@ -1,9 +1,10 @@
 <template>
     <div class="home">
+        <figma-profile class="profile"></figma-profile>
         <figma-title color="white">Figma pdf</figma-title>
         <p class="description">The easiest way to convert figma files into pdf</p>
         <figma-button-input :valid="fileValid" @clearError="fileValid = true" v-model="figmaFileUrl" @onButtonClicked="validateFigmaUrl" class="file-input" placeholder="File url"></figma-button-input>
-        <!-- <span>Or <a href="/api/auth">login</a> using Oauth</span> -->
+        <span class="oauth-text">Or use <a class="oauth-text-link " href="/api/auth">Oauth</a></span>
         <figma-alert :visible="alertVisible">
           <figma-alert-header>
             <img src="../../assets/icons/info.svg" alt="">
@@ -25,6 +26,7 @@ import FigmaAlert from "@/components/Common/FigmaAlert.vue";
 import FigmaAlertActions from "@/components/Common/FigmaAlertActions.vue";
 import FigmaAlertContent from "@/components/Common/FigmaAlertContent.vue";
 import FigmaAlertHeader from "@/components/Common/FigmaAlertHeader.vue";
+import FigmaProfile from "@/components/Specific/FigmaProfile.vue";
 
 const FIGMA_URL_REGEX = /https:\/\/([w\.-]+.)?figma.com\/(file|proto)\/([0-9a-zA-Z]{22,128})(?:\/.*)?$/;
 
@@ -36,7 +38,8 @@ export default {
     FigmaAlert,
     FigmaAlertActions,
     FigmaAlertContent,
-    FigmaAlertHeader
+    FigmaAlertHeader,
+    FigmaProfile
   },
   data() {
     return {
@@ -109,5 +112,32 @@ export default {
 
 .mask-icon {
   margin-right: 10px;
+}
+
+.oauth-text {
+  margin-top: 11px;
+}
+
+.oauth-text,
+.oauth-text-link {
+  font-family: Exo;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  font-size: 12px;
+  text-align: center;
+
+  color: #ffffff;
+}
+
+.oauth-text-link {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.profile {
+  position: absolute;
+  top: 55px;
+  right: 55px;
 }
 </style>

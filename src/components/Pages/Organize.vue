@@ -54,7 +54,7 @@
         </div>
       </div>
   </div>
-  <file-page-loader v-else :progress-value="progressValue" :step="loadingStep"></file-page-loader>
+  <file-page-loader :error="fetchingFrameError" v-else :progress-value="progressValue" :step="loadingStep"></file-page-loader>
 </template>
 
 <script>
@@ -102,7 +102,8 @@ export default {
       loadingStep: "Loading",
       progressValue: 0,
       generating: false,
-      historyStack: []
+      historyStack: [],
+      fetchingFrameError: null
     };
   },
   computed: {
@@ -157,9 +158,17 @@ export default {
   },
 
   mounted() {
-    createFramePages(this.$route.params.fileId).then(frames => {
-      this.file.frames = frames;
-    });
+    createFramePages(this.$route.params.fileId)
+      .then(frames => {
+        this.file.frames = frames;
+      })
+      .catch(e => {
+        if (e.response.status == 429) {
+          this.fetchingFrameError = "Too many requests, try Oauth";
+        } else {
+          this.fetchingFrameError = "The file key is invalid";
+        }
+      });
     WebSocketManager.onFrameStep(this.onFrameStep.bind(this));
   }
 };

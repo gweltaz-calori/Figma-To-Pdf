@@ -20,6 +20,14 @@ const router = express.Router();
 const FigmaClient = require("./figmaClient");
 const { convertFrameToPdf } = require("./pdfExport");
 
+const AUTH_CONFIG = {
+  client_id: process.env.FIGMA_CLIENT_ID,
+  client_secret: process.env.FIGMA_CLIENT_SECRET,
+  redirect_uri: "http://localhost:8080/api/auth/callback",
+  scope: "file_read",
+  state: "state"
+};
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static("dist"));
@@ -84,6 +92,23 @@ router.get("/images/:key", async (req, res) => {
     console.log(e);
     res.status(400).send("Invalid file key");
   }
+});
+
+router.get("/auth", (req, res) => {
+  res.redirect(
+    `https://www.figma.com/oauth?client_id=${
+      AUTH_CONFIG.client_id
+    }&redirect_uri=${AUTH_CONFIG.redirect_uri}&scope=${
+      AUTH_CONFIG.scope
+    }&state=${AUTH_CONFIG.state}&response_type=code&client_secret=${
+      AUTH_CONFIG.client_secret
+    }`
+  );
+});
+
+router.get("/auth/callback", (req, res) => {
+  res.cookie("code", req.query.code);
+  res.redirect("/");
 });
 
 app.get("*", (req, res) => {

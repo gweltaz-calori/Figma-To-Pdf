@@ -1,25 +1,32 @@
 <template>
-  <div class="loader">
+  <div v-if="!error" class="loader">
     <figma-title>FETCHING FILE</figma-title>
     <div class="progress-content">
         <figma-progress-placeholder class="progress"></figma-progress-placeholder>
         <span class="progress-label">{{step}}</span>
     </div>
   </div>
+  <div v-else class="fetch-error">
+    <span>{{error}}</span>
+    <figma-button  :to="{'name':'home'}" class="toggle-selection-button">GO HOME</figma-button>
+  </div>
 </template>
 <script>
+import FigmaButton from "@/components/Common/FigmaButton.vue";
 import FigmaTitle from "@/components/Common/FigmaTitle.vue";
 import FigmaProgressPlaceholder from "@/components/Specific/FigmaProgressPlaceholder.vue";
 export default {
-  props: ["step", "progressValue"],
+  props: ["step", "progressValue", "error"],
   components: {
     FigmaTitle,
-    FigmaProgressPlaceholder
+    FigmaProgressPlaceholder,
+    FigmaButton
   }
 };
 </script>
 <style scoped>
-.loader {
+.loader,
+.fetch-error {
   width: 100%;
   height: 100%;
   display: flex;
