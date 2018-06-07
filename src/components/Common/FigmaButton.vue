@@ -1,9 +1,9 @@
 <template>
-    <a class="button" :class="[theme,{'disabled':disabled}]" v-if="href" href=""><slot></slot></a>
-    <router-link :to="to" :class="[theme,{'disabled':disabled}]" class="button" v-else-if="to">
+    <a class="button" :class="[theme,{'disabled':disabled},{'round':round}]" v-if="href" href=""><slot></slot></a>
+    <router-link :to="to" :class="[theme,{'disabled':disabled},{'round':round}]" class="button" v-else-if="to">
         <slot></slot>
     </router-link>
-    <button :class="[theme,{'disabled':disabled}]" class="button" v-else>
+    <button :class="[theme,{'disabled':disabled},{'round':round}]" class="button" v-else>
         <slot></slot>
     </button>
 </template>
@@ -17,6 +17,9 @@ export default {
     href: {},
     to: {},
     disabled: {
+      default: false
+    },
+    round: {
       default: false
     }
   }
@@ -38,6 +41,10 @@ export default {
   padding: 9px 18px;
   cursor: pointer;
   text-decoration: none;
+}
+
+.round {
+  padding: 9px;
 }
 
 .light {

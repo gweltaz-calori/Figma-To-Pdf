@@ -34,7 +34,7 @@ module.exports = {
         id: frame.id,
         name: frame.name,
         enabled: true,
-        absoluteBoundingBox: frame.absoluteBoundingBox
+        bounds: frame.absoluteBoundingBox
       });
     }
 

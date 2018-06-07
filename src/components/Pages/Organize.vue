@@ -1,6 +1,12 @@
 <template>
   <generation-loader v-if="generating" :file="file" :frames="filteredFrames"></generation-loader>
   <div v-else-if="this.file.frames.length > 0" class="creator">
+      <figma-button :to="{'name':'home'}" theme="dark" class="home-button" :round="true">
+        <svg width="12" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="7.53539" height="1.57473" rx="0.787366" transform="translate(5.55664 11.3276) rotate(-135)" fill="white"/>
+          <rect width="7.53539" height="1.57473" rx="0.787366" transform="translate(1.34186 7.11423) scale(1 -1) rotate(45)" fill="white"/>
+        </svg>
+      </figma-button>
       <figma-input v-model="file.name" placeholder="File name" class="file-title"></figma-input>
       <div class="content">
         <div class="export-header">
@@ -13,6 +19,7 @@
           </div>
           <div class="buttons">
             <div class="buttons-container">
+              <figma-button  @click.native="toggleSelection" class="toggle-selection-button">Select / Unselect all</figma-button>
               <figma-button  @click.native="reset" class="reset-button">reset</figma-button>
               <figma-button  @click.native="cancel" class="reset-button">undo</figma-button>
               <figma-button @click.native="generatePdf" :disabled="filteredFrames.length == 0" theme="dark">create pdf</figma-button>
@@ -138,6 +145,11 @@ export default {
           frame.enabled = true;
           break;
       }
+    },
+    toggleSelection() {
+      for (let frame of this.file.frames) {
+        frame.enabled = !frame.enabled;
+      }
     }
   },
   beforeDestroy() {
@@ -198,7 +210,8 @@ export default {
   display: flex;
 }
 
-.reset-button {
+.reset-button,
+.toggle-selection-button {
   margin-right: 10px;
 }
 
@@ -260,5 +273,11 @@ export default {
 .error-message {
   margin-top: 5px;
   margin-left: auto;
+}
+
+.home-button {
+  position: absolute;
+  top: 30px;
+  left: 30px;
 }
 </style>

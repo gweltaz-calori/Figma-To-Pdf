@@ -56,7 +56,8 @@ router.post("/files/:key/export", async (req, res) => {
         });
       } catch (e) {
         notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP", {
-          action: "SKIP"
+          action: "SKIP",
+          frame: frameItem
         });
       }
     }

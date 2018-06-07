@@ -1,5 +1,49 @@
 import axios from "axios";
 import WebSocketManager from "@/js/utils/ws";
+import { clamp } from "@/js/utils/math";
+
+const sortFramesByPosition = frames => {
+  let rows = [];
+
+  for (let frame of frames) {
+    let row = rows.find(row => {
+      let frameBounds = {
+        top: frame.bounds.y,
+        bottom: frame.bounds.y + frame.bounds.height
+      };
+
+      let rowBounds = {
+        top: row.bounds.y,
+        bottom: row.bounds.y + row.bounds.height
+      };
+
+      return (
+        (frameBounds.top >= rowBounds.top &&
+          frameBounds.top <= rowBounds.bottom) ||
+        (frameBounds.bottom <= rowBounds.bottom &&
+          frameBounds.bottom >= rowBounds.top)
+      );
+    });
+
+    if (row) {
+      row.children.push(frame);
+    } else {
+      rows.push({
+        children: [frame],
+        name: frame.name,
+        bounds: frame.bounds
+      });
+    }
+  }
+
+  let sortedFrames = [];
+  for (let row of rows) {
+    let sortedRow = row.children.sort((a, b) => a.bounds.x - b.bounds.x);
+    sortedFrames = sortedFrames.concat(sortedRow);
+  }
+
+  return sortedFrames;
+};
 
 export const createFramePages = async id => {
   let response = await axios({
@@ -9,7 +53,8 @@ export const createFramePages = async id => {
       "Socket-Id": WebSocketManager.socket.id
     }
   });
-  return response.data;
+
+  return sortFramesByPosition(response.data);
 };
 
 export const createPdf = async (file, frames) => {

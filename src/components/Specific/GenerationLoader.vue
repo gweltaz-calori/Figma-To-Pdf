@@ -2,6 +2,12 @@
   <div class="loader">
     <figma-button v-if="complete" class="back-button" :to="{name: 'home'}" theme="dark">create another pdf</figma-button>
     <figma-title>{{stepLabel}}</figma-title>
+    <div v-if="exportHasError" class="export-summary">
+      <span class="summary-title">Export Summary</span>
+      <div class="summary-error" v-for="error in errors" :key="error.id">
+        [Error] For Frame "{{error.content}}"
+      </div>
+    </div>
     <div v-if="!complete" class="progress-content">
         <figma-progress class="progress" :progress="(currentPage/frames.length)*100"></figma-progress>
         <span class="progress-label">{{getAction}} page {{currentPage}}/{{frames.length}}</span>
@@ -28,18 +34,28 @@ export default {
       currentPage: 0,
       stepLabel: "GENERATION STARTED",
       complete: false,
-      action: "PROCESSED"
+      action: "PROCESSED",
+      errors: []
     };
   },
   computed: {
     getAction() {
       return this.action == "SKIP" ? "Skipping" : "Processing";
+    },
+    exportHasError() {
+      return this.errors.length > 0;
     }
   },
   methods: {
     onPdfFrameStep(data) {
       this.currentPage++;
       this.action = data.action;
+      if (this.action == "SKIP") {
+        this.errors.push({
+          content: data.frame.name,
+          id: data.frame.id
+        });
+      }
     },
     onPdfGenerated(data) {
       this.stepLabel = "PDF GENERATED";
@@ -98,5 +114,32 @@ export default {
   position: absolute;
   top: 50px;
   right: 50px;
+}
+
+.export-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-title {
+  font-family: Exo;
+  font-style: normal;
+  font-weight: bold;
+  line-height: normal;
+  font-size: 14px;
+  background: -webkit-linear-gradient(180deg, #8d87e1 0%, #685eff 100%), #c4c4c4;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.summary-error {
+  font-family: Exo;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  font-size: 10px;
+  margin-bottom: 10px;
+  color: #8d87e1;
 }
 </style>
