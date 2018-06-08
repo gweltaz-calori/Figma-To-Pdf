@@ -11,6 +11,12 @@ const RateLimit = require("express-rate-limit");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 
+const limiter = new RateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  delayMs: 0
+});
+
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
@@ -29,7 +35,9 @@ const AUTH_CONFIG = {
   state: "state"
 };
 
-app.use(cors());
+app.enable("trust proxy");
+app.use(limiter);
+
 app.use(bodyParser.json());
 app.use(express.static("dist"));
 app.use("/api", router);

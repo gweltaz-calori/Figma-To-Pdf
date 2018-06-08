@@ -1,7 +1,8 @@
-import { getCookie } from "@/js/utils/cookies";
+import { getCookie, deleteCookie } from "@/js/utils/cookies";
 
 import Vue from "vue";
 import Vuex from "vuex";
+import { logout } from "@/api";
 
 Vue.use(Vuex);
 
@@ -13,9 +14,23 @@ const state = {
   }
 };
 
-const mutations = {};
+const mutations = {
+  logoutUser(state) {
+    state.user.access_token = null;
+    state.user.expires_in = null;
+    state.user.refresh_token = null;
 
-const actions = {};
+    ["access_token", "expires_in", "refresh_token"].map(cookieName =>
+      deleteCookie(cookieName)
+    );
+  }
+};
+
+const actions = {
+  async logout({ commit }) {
+    commit("logoutUser");
+  }
+};
 
 const getters = {
   user: state => state.user

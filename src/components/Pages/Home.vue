@@ -4,7 +4,7 @@
         <figma-title color="white">Figma pdf</figma-title>
         <p class="description">The easiest way to convert figma files into pdf</p>
         <figma-button-input :valid="fileValid" @clearError="fileValid = true" v-model="figmaFileUrl" @onButtonClicked="validateFigmaUrl" class="file-input" placeholder="File url"></figma-button-input>
-        <span class="oauth-text">Or use <a class="oauth-text-link " href="/api/auth">Oauth</a></span>
+        <span v-if="!user.access_token" class="oauth-text">Or use <a class="oauth-text-link " href="/api/auth">Oauth</a></span>
         <figma-alert :visible="alertVisible">
           <figma-alert-header>
             <img src="../../assets/icons/info.svg" alt="">

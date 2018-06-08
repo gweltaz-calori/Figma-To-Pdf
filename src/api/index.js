@@ -37,6 +37,8 @@ const sortFramesByPosition = frames => {
     }
   }
 
+  rows = rows.sort((a, b) => a.bounds.y - b.bounds.y);
+
   let sortedFrames = [];
   for (let row of rows) {
     let sortedRow = row.children.sort((a, b) => a.bounds.x - b.bounds.x);
@@ -78,6 +80,14 @@ export const createPdf = async (file, frames) => {
       "Socket-Id": WebSocketManager.socket.id
     }
   });
+
+  return response.data;
+};
+
+export const logout = async token => {
+  const response = await axios.delete(
+    `/api/auth/${store.getters.user.access_token}`
+  );
 
   return response.data;
 };
