@@ -163,11 +163,7 @@ export default {
         this.file.frames = frames;
       })
       .catch(e => {
-        if (e.response.status == 429) {
-          this.fetchingFrameError = "Too many requests, try Oauth";
-        } else {
-          this.fetchingFrameError = "The file key is invalid";
-        }
+        this.fetchingFrameError = e.response.data;
       });
     WebSocketManager.onFrameStep(this.onFrameStep.bind(this));
   }

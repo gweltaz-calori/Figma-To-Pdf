@@ -7,7 +7,7 @@
     </div>
   </div>
   <div v-else class="fetch-error">
-    <span>{{error}}</span>
+    <span class="error">{{error}}</span>
     <figma-button  :to="{'name':'home'}" class="toggle-selection-button">GO HOME</figma-button>
   </div>
 </template>
@@ -48,5 +48,11 @@ export default {
   background: -webkit-linear-gradient(180deg, #8d87e1 0%, #685eff 100%), #c4c4c4;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.error {
+  color: rgb(255, 88, 88);
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 </style>

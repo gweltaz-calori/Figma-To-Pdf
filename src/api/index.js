@@ -1,6 +1,7 @@
 import axios from "axios";
 import WebSocketManager from "@/js/utils/ws";
 import { clamp } from "@/js/utils/math";
+import store from "@/store";
 
 const sortFramesByPosition = frames => {
   let rows = [];
@@ -46,12 +47,15 @@ const sortFramesByPosition = frames => {
 };
 
 export const createFramePages = async id => {
+  const headers = { "Socket-Id": WebSocketManager.socket.id };
+
+  if (store.getters.user.access_token)
+    headers["access_token"] = store.getters.user.access_token;
+
   let response = await axios({
     method: "GET",
     url: `/api/images/${id}`,
-    headers: {
-      "Socket-Id": WebSocketManager.socket.id
-    }
+    headers
   });
 
   return sortFramesByPosition(response.data);

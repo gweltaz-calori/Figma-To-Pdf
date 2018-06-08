@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <figma-profile class="profile"></figma-profile>
+        <figma-profile v-if="user.access_token" class="profile"></figma-profile>
         <figma-title color="white">Figma pdf</figma-title>
         <p class="description">The easiest way to convert figma files into pdf</p>
         <figma-button-input :valid="fileValid" @clearError="fileValid = true" v-model="figmaFileUrl" @onButtonClicked="validateFigmaUrl" class="file-input" placeholder="File url"></figma-button-input>
@@ -30,6 +30,8 @@ import FigmaProfile from "@/components/Specific/FigmaProfile.vue";
 
 const FIGMA_URL_REGEX = /https:\/\/([w\.-]+.)?figma.com\/(file|proto)\/([0-9a-zA-Z]{22,128})(?:\/.*)?$/;
 
+import { mapGetters } from "vuex";
+
 export default {
   components: {
     FigmaButtonInput,
@@ -48,6 +50,9 @@ export default {
       fileId: "",
       fileValid: true
     };
+  },
+  computed: {
+    ...mapGetters(["user"])
   },
   methods: {
     async validateFigmaUrl() {

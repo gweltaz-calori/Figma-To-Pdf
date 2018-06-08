@@ -3,29 +3,49 @@ const https = require("https");
 const { performance } = require("perf_hooks");
 
 let axiosInstance = axios.create({
-  baseURL: "https://api.figma.com/v1/",
-  headers: {
-    "X-Figma-Token": "1181-e9b3dee4-1ea6-497e-b254-867f6791075e"
-  }
+  baseURL: "https://api.figma.com/v1/"
 });
 
 module.exports = {
-  async getFrames(key) {
+  async getFrames(key, accessToken) {
+    const headers = {};
+
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    } else {
+      headers["X-Figma-Token"] = process.env.FIGMA_TOKEN;
+    }
+
     let start = performance.now();
-    let response = await axiosInstance.get(`files/${key}`);
+    let response = await axiosInstance({
+      method: "GET",
+      url: `files/${key}`,
+      headers
+    });
     return response.data.document.children[0].children.filter(
       layer => layer.type === "FRAME" || layer.type === "GROUP"
     );
   },
-  async getFramesWithImages(frames, key) {
+  async getFramesWithImages(frames, key, accessToken) {
     let allImagesFrames = [];
 
+    const headers = {};
+
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    } else {
+      headers["X-Figma-Token"] = process.env.FIGMA_TOKEN;
+    }
+
     let start = performance.now();
-    let response = await axiosInstance.get(`images/${key}`, {
+    let response = await axiosInstance({
+      url: `images/${key}`,
+      method: "GET",
       params: {
         ids: frames.map(frame => frame.id).join(","),
         format: "svg"
-      }
+      },
+      headers
     });
 
     for (let frame of frames) {

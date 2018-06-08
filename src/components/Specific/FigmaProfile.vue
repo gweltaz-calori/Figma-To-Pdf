@@ -14,8 +14,8 @@
 
         </div>
         <div class="infos">
-            <div class="logged-as">Logged as</div>
-            <div class="profile-name">John Doe</div>
+            <div class="logged-as">You are</div>
+            <div class="profile-name">Logged</div>
         </div>
     </div>
 </template>
