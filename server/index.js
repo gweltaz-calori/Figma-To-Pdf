@@ -30,7 +30,7 @@ const { convertFrameToPdf } = require("./pdfExport");
 const AUTH_CONFIG = {
   client_id: process.env.FIGMA_CLIENT_ID,
   client_secret: process.env.FIGMA_CLIENT_SECRET,
-  redirect_uri: "http://localhost:8080/api/auth/callback",
+  redirect_uri: `${process.env.REDIRECT_URI}/api/auth/callback`,
   scope: "file_read",
   state: "state"
 };
