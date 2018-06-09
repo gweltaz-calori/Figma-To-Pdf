@@ -54,7 +54,7 @@
         </div>
       </div>
   </div>
-  <file-page-loader :error="fetchingFrameError" v-else :progress-value="progressValue" :step="loadingStep"></file-page-loader>
+  <file-page-loader v-else :error-message="fetchingFrameError"  :progress-value="progressValue" :step="loadingStep"></file-page-loader>
 </template>
 
 <script>
