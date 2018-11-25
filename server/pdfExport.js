@@ -96,7 +96,7 @@ module.exports = {
 
           await browser.close();
 
-          //fs.unlink(pathName, () => {});
+          fs.unlink(pathName, () => {});
           resolve(pdf);
         });
       } catch (e) {}
