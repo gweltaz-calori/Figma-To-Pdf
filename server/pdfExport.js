@@ -79,7 +79,7 @@ module.exports = {
             ]
           });
           const page = await browser.newPage();
-          await page.goto(`file:///${pathName}`);
+          await page.goto(`file://${pathName}`);
           const pdf = await page.pdf({
             displayHeaderFooter: false,
             printBackground: true,
