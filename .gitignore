@@ -5,6 +5,7 @@ dist/
 server/temp
 npm-debug.log
 yarn-error.log
+server/exports
 
 # Editor directories and files
 .idea
