@@ -25,7 +25,7 @@ const io = require("socket.io")(server, {
 const router = express.Router();
 
 const FigmaClient = require("./figmaClient");
-const { convertFrameToPdf } = require("./pdfExport");
+const PdfExport = require("./pdfExport");
 
 const AUTH_CONFIG = {
   client_id: process.env.FIGMA_CLIENT_ID,
@@ -46,41 +46,26 @@ router.post("/files/:key/export", async (req, res) => {
   try {
     if (req.body.file.frames.length == 0) throw "No frame selected";
 
-    const exportOptions = {
-      name: req.body.file.name,
-      version: req.body.file.version
-    };
-
-    res.writeHead(200, { "Content-Type": "application/pdf" });
-
-    let pdfWriter = hummus.createWriter(new hummus.PDFStreamForResponse(res), {
-      version: hummus.ePDFVersion15
-    });
-
-    for (let frame in req.body.file.frames) {
-      //don't export pdf in parallel to avoid increasing the memory
-
-      let frameItem = req.body.file.frames[frame];
-
-      try {
-        pdfWriter.appendPDFPagesFromPDF(
-          new hummus.PDFRStreamForBuffer(
-            await convertFrameToPdf(frameItem.imageUrl, frame, exportOptions)
-          )
-        );
+    const pdf = await PdfExport.exportToPdf(req.body, {
+      onFrame: () => {
         notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP", {
           action: "PROCESSED"
         });
-      } catch (e) {
+      },
+      onFrameError: () => {
         notifyUser(req.headers["socket-id"], "ON_PDF_FRAME_STEP", {
           action: "SKIP",
           frame: frameItem
         });
+      },
+      onGenerating: () => {
+        notifyUser(req.headers["socket-id"], "ON_PDF_GENERATING", {});
       }
-    }
+    });
+    notifyUser(req.headers["socket-id"], "ON_PDF_DOWNLOADING", {});
+    res.setHeader("Content-Type", "application/pdf");
 
-    pdfWriter.end();
-    res.end();
+    res.send(pdf);
   } catch (e) {
     console.log(e);
     res.status(400).send("An error occured during the export");
@@ -100,13 +85,12 @@ router.get("/images/:key", async (req, res) => {
     notifyUser(req.headers["socket-id"], "ON_FRAME_STEP", {
       step: "Creating Images"
     });
-    res.send(
-      await FigmaClient.getFramesWithImages(
-        frames,
-        req.params.key,
-        req.headers["access_token"]
-      )
+    const frameSvgs = await FigmaClient.getFramesWithImages(
+      frames,
+      req.params.key,
+      req.headers["access_token"]
     );
+    res.send(frameSvgs);
   } catch (e) {
     switch (e.response.status) {
       case 429:

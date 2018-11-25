@@ -26,6 +26,7 @@
     "passport-figma": "0.0.4",
     "passport-oauth2": "^1.4.0",
     "pdf-merge": "^1.0.2",
+    "puppeteer": "^1.10.0",
     "simple-oauth2": "^1.6.0",
     "socket.io": "^2.1.0",
     "socket.io-stream": "^0.9.1",

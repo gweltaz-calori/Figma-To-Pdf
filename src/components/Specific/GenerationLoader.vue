@@ -68,6 +68,12 @@ export default {
 
       this.download();
     },
+    onPdfGenerating() {
+      this.stepLabel = "GENERATING PDF";
+    },
+    onPdfDownloading() {
+      this.stepLabel = "DOWNLOADING PDF";
+    },
     download() {
       this.link.click();
     }
@@ -78,6 +84,8 @@ export default {
   mounted() {
     createPdf(this.file, this.frames).then(this.onPdfGenerated.bind(this));
     WebSocketManager.onPdfFrameStep(this.onPdfFrameStep.bind(this));
+    WebSocketManager.onPdfDownloading(this.onPdfDownloading.bind(this));
+    WebSocketManager.onPdfGenerating(this.onPdfGenerating.bind(this));
   }
 };
 </script>
